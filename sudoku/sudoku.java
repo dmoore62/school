@@ -8,17 +8,39 @@ public class sudoku {
 		
 		int games_i = inFile.nextInt();
 		
-		for(int main_game_i = 0; main_game_i < games_i; main_game_i ++){
+		for(int main_game_i = 1; main_game_i <= games_i; main_game_i ++){
 			
-			Board b = new Board();
+			Cell[][] board = new Cell[9][9];
 			
-			b.init(inFile);
+			init(board, inFile);
 			
-			b.print_board(main_game_i);
+			print_board(board, main_game_i);
 			
 		}
 		
+	}//end main method
+
+	public static void init(Cell[][] board, Scanner s){
+		for(int i = 0; i < 9; i++){
+			for(int j = 0; j < 9; j ++){
+				board[i][j] = new Cell(i, j, s.nextInt());
+			}
+		}
 	}
+
+	public static void print_board(Cell[][] board, int k){
+		System.out.println("Test case "+ k +":");
+		System.out.println();
+		for (int i = 0; i < 9; i ++){
+			for (int j = 0; j < 9; j ++){
+				System.out.print(board[i][j].value+" ");
+			}
+			System.out.printf("\n");
+		}
+		System.out.println();
+		System.out.println();
+	}
+	
 }
 
 class Cell {
@@ -49,8 +71,8 @@ class Cell {
 		return this.value;
 	}
 	
-	public void set_val(int val){
-		this.value = val;
+	public int set_val(int val){
+		return val;
 	}
 	
 	public int get_row(){
