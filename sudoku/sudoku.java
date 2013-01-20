@@ -2,16 +2,33 @@ import java.util.*;
 
 public class sudoku {
 	
+	public static void main(String[] args){
+		
+		Scanner inFile = new Scanner(System.in);
+		
+		int games_i = inFile.nextInt();
+		
+		for(int main_game_i = 0; main_game_i < games_i; main_game_i ++){
+			
+			Board b = new Board();
+			
+			b.init(inFile);
+			
+			b.print_board(main_game_i);
+			
+		}
+		
+	}
 }
 
-class cell {
+class Cell {
 	boolean is_set;
 	int row;
 	int col;
 	public ArrayList<Integer> pos_nums;
 	int value;
 	
-	public cell(int row, int col, int val){
+	public Cell(int row, int col, int val){
 		this.row = row;
 		this.col = col;
 		if(val == 0){
@@ -51,27 +68,30 @@ class cell {
 	}
 }//end cell class
 
-class board {
-	cell [][] theBoard;
+class Board {
+	Cell [][] theBoard;
 	boolean is_solved;
 	
-	public board(){
+	public Board(){
 		this(9, 9);
 	}
 	
-	public board(int rows, int cols){
-		theBoard = new cell [rows][cols];
+	public Board(int rows, int cols){
+		theBoard = new Cell [rows][cols];
 		is_solved = false;
 	}
 	
-	public void print_board(){
+	public void print_board(int k){
+		System.out.println("Test case "+ k +":");
+		System.out.println();
 		for (int i = 0; i < 9; i ++){
 			for (int j = 0; j < 9; j ++){
 				System.out.print(theBoard[i][j].value+" ");
 			}
-			System.out.printf("\n");
+			//System.out.printf("\n");
 		}
-		System.out.printf("\n\n");
+		System.out.println();
+		System.out.println();
 	}
 	
 	public int check_cell(int row, int col){
@@ -86,24 +106,29 @@ class board {
 		}
 	}
 	
-	public void check_row(cell c){
+	public void check_row(Cell c, int size){
+		for(int i = 1; i < size; i ++){
+			
+		}
+	}
+	
+	public void check_col(Cell c, int size){
 		
 	}
 	
-	public void check_col(cell c){
-		
-	}
-	
-	public void check_square(cell c){
-		
+	public void check_square(Cell c){
+		check_row(theBoard[c.row][c.col], 3);
+		check_col(theBoard[c.row][c.col], 3);
 	}
 	
 	public void calc_all_pos_nums(){
 		for(int i = 0; i < 9; i ++){
 			for(int j = 0; j < 9; j++){
-				check_row(theBoard[i][j]);
-				check_col(theBoard[i][j]);
-				check_square(theBoard[i][j]);
+				if(theBoard[i][j].is_set == false){
+					this.check_row(theBoard[i][j], 9);
+					this.check_col(theBoard[i][j], 9);
+					this.check_square(theBoard[i][j]);
+				}
 			}
 		}
 	}
