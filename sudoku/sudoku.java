@@ -10,11 +10,13 @@ public class sudoku {
 		
 		for(int main_game_i = 1; main_game_i <= games_i; main_game_i ++){
 			
-			Cell[][] board = new Cell[9][9];
-			
-			init(board, inFile);
+			//Cell[][] board = new Cell[9][9];
+			Board b = new Board();
 
-			boolean go_agian = false;
+			//init(board, inFile);
+			b.init(inFile);
+
+			/*boolean go_again = false;
 
 			do{
 
@@ -22,9 +24,9 @@ public class sudoku {
 
 				go_again = update_board(board);
 
-			}while(go_again)
+			}while(go_again);*/
 			
-			print_board(board, main_game_i);
+			b.print_board(main_game_i);
 			
 		}
 		
@@ -53,25 +55,26 @@ public class sudoku {
 
 	public static void check_row(Cell[][] board, int row, int col){
 		for (int i = 1; i < 9; i ++){
-			if(board[row][col].pos_nums.contains(board[(row + i)%9][col].value))}{
-				board[row][col].pos_nums.remove(Integer.valueOf(board[(row + i)%9][col].value));
+			if(board[row][col].pos_nums.contains(board[(row+i)%9][col].get_val())){
+				board[row][col].pos_nums.remove(board[(row+i)%9][col].get_val());
+				
 			}
 		}
 	}
 	
 	public static void check_column(Cell[][] board, int row, int col){
 		for (int i = 1; i < 9; i ++){
-			if(board[row][col].pos_nums.contains(board[row][(col + i)%9].value))}{
+			if(board[row][col].pos_nums.contains(Integer.valueOf(board[row][(col + i)%9].value))){
 				board[row][col].pos_nums.remove(Integer.valueOf(board[row][(col + i)%9].value));
 			}
 		}
 	}
 
 	public static void check_square(Cell[][] board, int row, int col){
-		sq_row = row/3;
-		sq_col = col/3;
-		row_i = row%3;
-		col_i = col%3;
+		int sq_row = row/3;
+		int sq_col = col/3;
+		int row_i = row%3;
+		int col_i = col%3;
 		for(int i = sq_row * 3; i < 3; i ++){
 			for(int j = sq_col * 3; j < 3; j ++){
 				if((i != row) && (j != col)){
@@ -95,9 +98,9 @@ public class sudoku {
 
 	public static boolean update_board(Cell[][] board){
 		boolean updated = false;
-		for(i = 0; i < 9; i ++){
-			for(j = 0; j < 9; j ++){
-				if(board[i][j].is_set == false && board[i][j].pos_nums.size == 1){
+		for(int i = 0; i < 9; i ++){
+			for(int j = 0; j < 9; j ++){
+				if(board[i][j].is_set == false && board[i][j].pos_nums.size() == 1){
 					board[i][j].value = board[i][j].pos_nums.get(0);
 					board[i][j].is_set = true;
 					updated = true;
@@ -176,7 +179,7 @@ class Board {
 			for (int j = 0; j < 9; j ++){
 				System.out.print(theBoard[i][j].value+" ");
 			}
-			//System.out.printf("\n");
+			System.out.printf("\n");
 		}
 		System.out.println();
 		System.out.println();
@@ -189,7 +192,7 @@ class Board {
 	public void init(Scanner s){
 		for(int i = 0; i < 9; i++){
 			for(int j = 0; j < 9; j ++){
-				theBoard[i][j].set_val(s.nextInt());
+				theBoard[i][j] = new Cell(i, j, s.nextInt());
 			}
 		}
 	}
