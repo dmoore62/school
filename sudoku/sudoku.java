@@ -16,15 +16,19 @@ public class sudoku {
 			//init(board, inFile);
 			b.init(inFile);
 
-			/*boolean go_again = false;
+			boolean go_again = false;
 
 			do{
 
-				calc_pos_nums(board);
+				b.calc_all_pos_nums();
 
-				go_again = update_board(board);
+				b.print_board(main_game_i);
 
-			}while(go_again);*/
+				go_again = b.update_board();
+
+				//b.print_board(main_game_i);
+
+			}while(go_again);
 			
 			b.print_board(main_game_i);
 			
@@ -120,19 +124,21 @@ class Cell {
 	int value;
 	
 	public Cell(int row, int col, int val){
+		//System.out.println("creating cell at: "+ row +", "+ col + " with value: "+ val);
 		this.row = row;
 		this.col = col;
 		if(val == 0){
-			is_set = false;
-			pos_nums = new ArrayList<Integer>();
-			for (int i = 1; i >= 9; i++){
-				pos_nums.add(i);
+			this.is_set = false;
+			this.pos_nums = new ArrayList<Integer>();
+			for (int i = 1; i <= 9; i++){
+				this.pos_nums.add(new Integer(i));
 			}//end i for
 			
 		}else{
-			is_set = true;
+			this.is_set = true;
 			this.value = val;
 		}
+		
 		
 	}//end cell constructor
 	
@@ -169,7 +175,7 @@ class Board {
 	
 	public Board(int rows, int cols){
 		theBoard = new Cell [rows][cols];
-		is_solved = false;
+		this.is_solved = false;
 	}
 	
 	public void print_board(int k){
@@ -197,44 +203,83 @@ class Board {
 		}
 	}
 	
-	public void check_row(Cell c, int size){
-		for(int i = 1; i < size; i ++){
-			
+	public void check_row(int row, int col){
+		/*System.out.println("check row!");
+		System.out.println("pos_nums(in):");
+		for(int i = 0; i < 9; i ++){
+			System.out.print(theBoard[row][col].pos_nums.get(i));
+		}*/
+		for (int i = 1; i < 9; i ++){
+			if(theBoard[row][col].pos_nums.contains(theBoard[(row+i)%9][col].get_val())){
+				theBoard[row][col].pos_nums.remove(Integer.valueOf(theBoard[(row+i)%9][col].get_val()));
+				
+			}
 		}
+		//System.out.println(theBoard[row][col].pos_nums.get(0));
+
 	}
 	
-	public void check_col(Cell c, int size){
-		
+	public void check_col(int row, int col){
+		//System.out.println("check col!");
+		for (int i = 1; i < 9; i ++){
+			if(theBoard[row][col].pos_nums.contains(theBoard[row][(col+i)%9].get_val())){
+				theBoard[row][col].pos_nums.remove(Integer.valueOf(theBoard[row][(col+i)%9].get_val()));
+				
+			}
+		}
+		//System.out.println(theBoard[row][col].pos_nums.get(0));
+
 	}
 	
-	public void check_square(Cell c){
-		check_row(theBoard[c.row][c.col], 3);
-		check_col(theBoard[c.row][c.col], 3);
+	public void check_square(int row, int col){
+		//System.out.println("check square!");
+		int sq_row = row/3;
+		int sq_col = col/3;
+		//int row_i = row%3;
+		//int col_i = col%3;
+		for(int i = sq_row * 3; i < 3; i ++){
+			for(int j = sq_col * 3; j < 3; j ++){
+				if((i != row) && (j != col)){
+					if(theBoard[row][col].pos_nums.contains(theBoard[i][j].get_val())){
+						theBoard[row][col].pos_nums.remove(Integer.valueOf(theBoard[i][j].get_val()));
+					}
+				}
+			}
+		}
+		//System.out.println(theBoard[row][col].pos_nums.get(0));
+
 	}
 	
 	public void calc_all_pos_nums(){
+		//System.out.println("calc all pos nums!");
 		for(int i = 0; i < 9; i ++){
 			for(int j = 0; j < 9; j++){
 				if(theBoard[i][j].is_set == false){
-					this.check_row(theBoard[i][j], 9);
-					this.check_col(theBoard[i][j], 9);
-					this.check_square(theBoard[i][j]);
+					this.check_row(i, j);
+					this.check_col(i, j);
+					this.check_square(i, j);
 				}
 			}
 		}
 	}
 	
-	public void update_board(){
+	public boolean update_board(){
+		boolean gets_updated = false;
 		for(int i = 0; i < 9; i ++){
 			for(int j = 0; j < 9; j++){
 				if(theBoard[i][j].is_set == false){
+					//System.out.println("noticed false");
 					if(theBoard[i][j].pos_nums.size() == 1){
-						theBoard[i][j].set_val(theBoard[i][j].pos_nums.get(0));
+						//System.out.println("noticed single");
+						theBoard[i][j].value = theBoard[i][j].pos_nums.get(0);
+						//System.out.println("Value"+ theBoard[i][j].get_val());
 						theBoard[i][j].is_set = true;
+						gets_updated = true;
 					}
 				}	
 			}
 		}
+		return gets_updated;
 	}
 	
 	
