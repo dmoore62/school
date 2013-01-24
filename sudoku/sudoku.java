@@ -36,9 +36,15 @@ public class sudoku {
 			
 			}else{
 				
+				System.out.println("Test case "+ main_game_i +":");
+				System.out.println();
 				System.out.println("This board has no solution.");
+				System.out.println();
+				System.out.println();
 			}
+
 		}
+
 		
 	}//end main method
 }
@@ -159,14 +165,13 @@ class Board {
 	}
 	
 	public void check_square(int row, int col){
-		//System.out.println("check square!");
-		int sq_row = row/3;
-		int sq_col = col/3;
-		//int row_i = row%3;
-		//int col_i = col%3;
-		for(int i = sq_row * 3; i < 3; i ++){
-			for(int j = sq_col * 3; j < 3; j ++){
-				if((i != row) && (j != col)){
+		int sq_row = (row/3) * 3;
+		int sq_col = (col/3) * 3;
+		int row_limit = sq_row + 3;
+		int col_limit = sq_col + 3;
+		for(int i = sq_row; i < row_limit; i ++){
+			for(int j = sq_col; j < col_limit; j ++){
+				if(!((i == row) && (j == col))){
 					if(theBoard[row][col].pos_nums.contains(theBoard[i][j].get_val())){
 						theBoard[row][col].pos_nums.remove(Integer.valueOf(theBoard[i][j].get_val()));
 					}
@@ -213,12 +218,15 @@ class Board {
 	public boolean solve_rec(int row, int col){
 		int next_row = row;
 		int next_col = col;
+		//System.out.println("Cursor on: "+ row +", "+ col);
+		//this.print_board(0);
+
 		if(this.solved()){
 			return true;
 		}else{
-			this.print_board(0);
+			
 			while(theBoard[row][col].value != 0){
-				if(row != 8 && col != 8){
+				if(!(row == 8 && col == 8)){
 					col ++;
 					if(col > 8){
 						col = 0;
@@ -226,36 +234,55 @@ class Board {
 					}
 				}
 			}
-				for(int loop_i = 0; loop_i < theBoard[row][col].pos_nums.size(); loop_i ++){
-					theBoard[row][col].value = theBoard[row][col].pos_nums.get(loop_i);
-					theBoard[row][col].is_set = true;
-					if(this.valid_move(row, col)){
-						if(row != 8 && col != 8){
-							next_col = col + 1;
-							if(next_col > 8){
-								next_col = 0;
-								next_row = row + 1;
-							}
-
-							if(this.solve_rec(next_row, next_col)){
-								return true;
-							}else{
-								theBoard[row][col].value = 0;
-								theBoard[row][col].is_set = false;
-							}
+			
+			for(int loop_i = 0; loop_i < theBoard[row][col].pos_nums.size(); loop_i ++){
+				theBoard[row][col].value = theBoard[row][col].pos_nums.get(loop_i);
+				theBoard[row][col].is_set = true;
+				if(this.valid_move(row, col)){
+					/*System.out.println("Valid Move!");
+					System.out.println("Cursor on: "+ row +", "+ col);
+					this.print_board(0);*/
+					if(!(row == 8 && col == 8)){
+						next_col = col + 1;
+						if(next_col > 8){
+							next_col = 0;
+							next_row = row + 1;
 						}
 					}else{
-						return false;
+						if(!this.solved()){
+							return false;
+						}
 					}
+					if(this.solve_rec(next_row, next_col)){
+						return true;
+					}else{
+						theBoard[row][col].value = 0;
+						theBoard[row][col].is_set = false;
+					}
+				}else{
+					/*System.out.println("NOT Valid Move!");
+					System.out.println("Cursor on: "+ row +", "+ col);
+					this.print_board(0);*/
+					theBoard[row][col].value = 0;
+					theBoard[row][col].is_set = false;
 				}
-			
+			}
+			/*System.out.println("NO Valid Moves! - Went back");
+			System.out.println("Cursor on: "+ row +", "+ col);
+			this.print_board(0);*/
+			theBoard[row][col].value = 0;
+			theBoard[row][col].is_set = false;
 			return false;
 		}
+		//return false;
 	}
 
 	public boolean solved(){
 		for(int i = 0; i < 9; i ++){
 			for(int j = 0; j < 9; j ++){
+				if(theBoard[i][j].value == 0){
+					return false;
+				}
 				if(!this.valid_row(i, j)){
 					return false;
 				}
@@ -290,12 +317,14 @@ class Board {
 	}
 
 	public boolean valid_square(int row, int col){
-		int sq_row = row/3;
-		int sq_col = col/3;
 		
-		for(int i = sq_row * 3; i < 3; i ++){
-			for(int j = sq_col * 3; j < 3; j ++){
-				if((i != row) && (j != col)){
+		int sq_row = (row/3) * 3;
+		int sq_col = (col/3) * 3;
+		int row_limit = sq_row + 3;
+		int col_limit = sq_col + 3;
+		for(int i = sq_row; i < row_limit; i ++){
+			for(int j = sq_col; j < col_limit; j ++){
+				if(!((i == row) && (j == col))){
 					if(theBoard[row][col].value == theBoard[i][j].value){
 						return false;
 					}
