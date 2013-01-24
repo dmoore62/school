@@ -274,7 +274,7 @@ class Board {
 			theBoard[row][col].is_set = false;
 			return false;
 		}
-		//return false;
+		
 	}
 
 	public boolean solved(){
