@@ -1,41 +1,50 @@
+/*Soduku.java - Daniel Moore
+100% Working - needs formatting*/
 import java.util.*;
 
 public class sudoku {
 	
 	public static void main(String[] args){
 		
+		//create scanner
 		Scanner inFile = new Scanner(System.in);
 		
+		//create main program counter
 		int games_i = inFile.nextInt();
 		
+		//loop through puzzles
 		for(int main_game_i = 1; main_game_i <= games_i; main_game_i ++){
 			
-			//Cell[][] board = new Cell[9][9];
+			
+			//create new board
 			Board b = new Board();
 
-			//init(board, inFile);
+			//fill board with available data
 			b.init(inFile);
 
+			//create flag to stop iterative solution
 			boolean go_again = false;
 
+			//attempt to solve puzzle interatively
+			//updates each cell possible numbers in the process
 			do{
 
 				b.calc_all_pos_nums();
 
-				//b.print_board(main_game_i);
-
 				go_again = b.update_board();
-
-				//b.print_board(main_game_i);
 
 			}while(go_again);
 
+			//check if puzzle is solved
+			//if not, recursively solve using backtracking
 			if(b.solve_rec(0, 0)){
 			
+				//output board and case number
 				b.print_board(main_game_i);
 			
 			}else{
 				
+				//output that there is no solution
 				System.out.println("Test case "+ main_game_i +":");
 				System.out.println();
 				System.out.println("This board has no solution.");
@@ -49,6 +58,8 @@ public class sudoku {
 	}//end main method
 }
 
+//Cells carry values when set.  When not set they carry 0
+//and an ArrayList of all possible values that need to be tried
 class Cell {
 	boolean is_set;
 	int row;
@@ -57,7 +68,6 @@ class Cell {
 	int value;
 	
 	public Cell(int row, int col, int val){
-		//System.out.println("creating cell at: "+ row +", "+ col + " with value: "+ val);
 		this.row = row;
 		this.col = col;
 		if(val == 0){
@@ -65,7 +75,7 @@ class Cell {
 			this.pos_nums = new ArrayList<Integer>();
 			for (int i = 1; i <= 9; i++){
 				this.pos_nums.add(new Integer(i));
-			}//end i for
+			}
 			
 		}else{
 			this.is_set = true;
@@ -75,29 +85,14 @@ class Cell {
 		
 	}//end cell constructor
 	
+	//returns value of cell
 	public int get_val(){
 		return this.value;
 	}
 	
-	public int set_val(int val){
-		return val;
-	}
-	
-	public int get_row(){
-		return this.row;
-	}
-	
-	public int get_col(){
-		return this.col;
-	}
-	
-	public void update_pos_nums(int val){
-		if(this.pos_nums.contains(val)){
-			this.pos_nums.remove(Integer.valueOf(val));
-		}
-	}
 }//end cell class
 
+//Board is a 2D array of cells
 class Board {
 	Cell [][] theBoard;
 	boolean is_solved;
@@ -111,6 +106,7 @@ class Board {
 		this.is_solved = false;
 	}
 	
+	//outputs board and case number
 	public void print_board(int k){
 		System.out.println("Test case "+ k +":");
 		System.out.println();
@@ -124,10 +120,7 @@ class Board {
 		System.out.println();
 	}
 	
-	public int check_cell(int row, int col){
-		return theBoard [row][col].value;
-	}
-	
+	//loops through input file and populates board
 	public void init(Scanner s){
 		for(int i = 0; i < 9; i++){
 			for(int j = 0; j < 9; j ++){
@@ -136,34 +129,27 @@ class Board {
 		}
 	}
 	
+	//updates cell by checking against row conflicts
 	public void check_row(int row, int col){
-		/*System.out.println("check row!");
-		System.out.println("pos_nums(in):");
-		for(int i = 0; i < 9; i ++){
-			System.out.print(theBoard[row][col].pos_nums.get(i));
-		}*/
 		for (int i = 1; i < 9; i ++){
 			if(theBoard[row][col].pos_nums.contains(theBoard[(row+i)%9][col].get_val())){
 				theBoard[row][col].pos_nums.remove(Integer.valueOf(theBoard[(row+i)%9][col].get_val()));
 				
 			}
 		}
-		//System.out.println(theBoard[row][col].pos_nums.get(0));
-
 	}
 	
+	//updates cell by checking against column conflicts
 	public void check_col(int row, int col){
-		//System.out.println("check col!");
 		for (int i = 1; i < 9; i ++){
 			if(theBoard[row][col].pos_nums.contains(theBoard[row][(col+i)%9].get_val())){
 				theBoard[row][col].pos_nums.remove(Integer.valueOf(theBoard[row][(col+i)%9].get_val()));
 				
 			}
 		}
-		//System.out.println(theBoard[row][col].pos_nums.get(0));
-
 	}
 	
+	//updates cell by checking against square conflicts
 	public void check_square(int row, int col){
 		int sq_row = (row/3) * 3;
 		int sq_col = (col/3) * 3;
@@ -178,12 +164,10 @@ class Board {
 				}
 			}
 		}
-		//System.out.println(theBoard[row][col].pos_nums.get(0));
-
 	}
 	
+	//updates all cell pos_nums array by checking against conflicts
 	public void calc_all_pos_nums(){
-		//System.out.println("calc all pos nums!");
 		for(int i = 0; i < 9; i ++){
 			for(int j = 0; j < 9; j++){
 				if(theBoard[i][j].is_set == false){
@@ -195,16 +179,17 @@ class Board {
 		}
 	}
 	
+	//if a cell has only one possible number, then set the value to that number
+	//returns true if any cell in board was updated
 	public boolean update_board(){
 		boolean gets_updated = false;
 		for(int i = 0; i < 9; i ++){
 			for(int j = 0; j < 9; j++){
 				if(theBoard[i][j].is_set == false){
-					//System.out.println("noticed false");
 					if(theBoard[i][j].pos_nums.size() == 1){
-						//System.out.println("noticed single");
+						
 						theBoard[i][j].value = theBoard[i][j].pos_nums.get(0);
-						//System.out.println("Value"+ theBoard[i][j].get_val());
+						
 						theBoard[i][j].is_set = true;
 						gets_updated = true;
 					}
@@ -214,17 +199,19 @@ class Board {
 		return gets_updated;
 	}
 	
-
+	//Solves puzzle using backtracking
+	//return true if a verified solution is found,
+	//false if board cannot be solved
 	public boolean solve_rec(int row, int col){
 		int next_row = row;
 		int next_col = col;
-		//System.out.println("Cursor on: "+ row +", "+ col);
-		//this.print_board(0);
 
+		//base case: board is solved
 		if(this.solved()){
 			return true;
 		}else{
 			
+			//find the next empty cell
 			while(theBoard[row][col].value != 0){
 				if(!(row == 8 && col == 8)){
 					col ++;
@@ -235,13 +222,16 @@ class Board {
 				}
 			}
 			
+			//loop through all possible values of a cell
+			//if value is valid, try next cell
 			for(int loop_i = 0; loop_i < theBoard[row][col].pos_nums.size(); loop_i ++){
+				//set cell value to next value in possible numbers array
 				theBoard[row][col].value = theBoard[row][col].pos_nums.get(loop_i);
 				theBoard[row][col].is_set = true;
+				//check if valid
 				if(this.valid_move(row, col)){
-					/*System.out.println("Valid Move!");
-					System.out.println("Cursor on: "+ row +", "+ col);
-					this.print_board(0);*/
+					
+					//move to next cell
 					if(!(row == 8 && col == 8)){
 						next_col = col + 1;
 						if(next_col > 8){
@@ -249,27 +239,29 @@ class Board {
 							next_row = row + 1;
 						}
 					}else{
+						//check if board is at the last cell
+						//returns false if valid move is made, and board is not solved
 						if(!this.solved()){
 							return false;
 						}
 					}
+					//recursive step, if returns true, send true up call stack
 					if(this.solve_rec(next_row, next_col)){
 						return true;
+					//if false, un set value in current cell
 					}else{
 						theBoard[row][col].value = 0;
 						theBoard[row][col].is_set = false;
 					}
+				//if not valid move, un set value in current cell
 				}else{
-					/*System.out.println("NOT Valid Move!");
-					System.out.println("Cursor on: "+ row +", "+ col);
-					this.print_board(0);*/
+					
 					theBoard[row][col].value = 0;
 					theBoard[row][col].is_set = false;
 				}
 			}
-			/*System.out.println("NO Valid Moves! - Went back");
-			System.out.println("Cursor on: "+ row +", "+ col);
-			this.print_board(0);*/
+			
+			//if no value in possible number array works, un set value in cell
 			theBoard[row][col].value = 0;
 			theBoard[row][col].is_set = false;
 			return false;
@@ -277,6 +269,8 @@ class Board {
 		
 	}
 
+	//checks if board is complete and free of conflicts
+	//returns true if board is solved
 	public boolean solved(){
 		for(int i = 0; i < 9; i ++){
 			for(int j = 0; j < 9; j ++){
@@ -297,9 +291,10 @@ class Board {
 		return true;
 	}
 	
+	//checks if row has conflicts
+	//returns false as soon as conflict is found
 	public boolean valid_row(int row, int col){
 		for(int i = 1; i < 9; i ++){
-			//System.out.println("current index: "+ (row+i)%9 +", "+ col);
 			if(theBoard[row][col].value == theBoard[(row + i)%9][col].value){
 				return false;
 			}
@@ -307,6 +302,8 @@ class Board {
 		return true;
 	}
 
+	//checks if column has conflicts
+	//returns false as soon as conflict is found
 	public boolean valid_col(int row, int col){
 		for(int i = 1; i < 9; i ++){
 			if(theBoard[row][col].value == theBoard[row][(col + i)%9].value){
@@ -316,6 +313,8 @@ class Board {
 		return true;
 	}
 
+	//checks if square has conflicts
+	//returns false as soon as conflict is found
 	public boolean valid_square(int row, int col){
 		
 		int sq_row = (row/3) * 3;
@@ -335,6 +334,8 @@ class Board {
 
 	}
 
+	//checks if last move was valid
+	//returns false as soon as conflict is found
 	public boolean valid_move(int row, int col){
 		if(!this.valid_row(row, col)){
 			return false;
