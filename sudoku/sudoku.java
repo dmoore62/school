@@ -22,98 +22,25 @@ public class sudoku {
 
 				b.calc_all_pos_nums();
 
-				b.print_board(main_game_i);
+				//b.print_board(main_game_i);
 
 				go_again = b.update_board();
 
 				//b.print_board(main_game_i);
 
 			}while(go_again);
+
+			if(b.solve_rec(0, 0)){
 			
-			b.print_board(main_game_i);
+				b.print_board(main_game_i);
 			
+			}else{
+				
+				System.out.println("This board has no solution.");
+			}
 		}
 		
 	}//end main method
-
-	public static void init(Cell[][] board, Scanner s){
-		for(int i = 0; i < 9; i++){
-			for(int j = 0; j < 9; j ++){
-				board[i][j] = new Cell(i, j, s.nextInt());
-			}
-		}
-	}
-
-	public static void print_board(Cell[][] board, int k){
-		System.out.println("Test case "+ k +":");
-		System.out.println();
-		for (int i = 0; i < 9; i ++){
-			for (int j = 0; j < 9; j ++){
-				System.out.print(board[i][j].value+" ");
-			}
-			System.out.printf("\n");
-		}
-		System.out.println();
-		System.out.println();
-	}
-
-	public static void check_row(Cell[][] board, int row, int col){
-		for (int i = 1; i < 9; i ++){
-			if(board[row][col].pos_nums.contains(board[(row+i)%9][col].get_val())){
-				board[row][col].pos_nums.remove(board[(row+i)%9][col].get_val());
-				
-			}
-		}
-	}
-	
-	public static void check_column(Cell[][] board, int row, int col){
-		for (int i = 1; i < 9; i ++){
-			if(board[row][col].pos_nums.contains(Integer.valueOf(board[row][(col + i)%9].value))){
-				board[row][col].pos_nums.remove(Integer.valueOf(board[row][(col + i)%9].value));
-			}
-		}
-	}
-
-	public static void check_square(Cell[][] board, int row, int col){
-		int sq_row = row/3;
-		int sq_col = col/3;
-		int row_i = row%3;
-		int col_i = col%3;
-		for(int i = sq_row * 3; i < 3; i ++){
-			for(int j = sq_col * 3; j < 3; j ++){
-				if((i != row) && (j != col)){
-					if(board[row][col].pos_nums.contains(board[i][j].value)){
-						board[row][col].pos_nums.remove(Integer.valueOf(board[i][j].value));
-					}
-				}
-			}
-		}
-	}
-
-	public static void calc_pos_nums(Cell[][] board){
-		for(int i = 0; i < 9; i ++){
-			for(int j = 0; j < 9; j ++){
-				check_row(board, i, j);
-				check_column(board, i, j);
-				check_square(board, i, j);
-			}
-		}
-	}
-
-	public static boolean update_board(Cell[][] board){
-		boolean updated = false;
-		for(int i = 0; i < 9; i ++){
-			for(int j = 0; j < 9; j ++){
-				if(board[i][j].is_set == false && board[i][j].pos_nums.size() == 1){
-					board[i][j].value = board[i][j].pos_nums.get(0);
-					board[i][j].is_set = true;
-					updated = true;
-				}
-			}
-		}
-
-		return updated;
-	}
 }
 
 class Cell {
@@ -282,5 +209,114 @@ class Board {
 		return gets_updated;
 	}
 	
+
+	public boolean solve_rec(int row, int col){
+		int next_row = row;
+		int next_col = col;
+		if(this.solved()){
+			return true;
+		}else{
+			this.print_board(0);
+			while(theBoard[row][col].value != 0){
+				if(row != 8 && col != 8){
+					col ++;
+					if(col > 8){
+						col = 0;
+						row ++;
+					}
+				}
+			}
+				for(int loop_i = 0; loop_i < theBoard[row][col].pos_nums.size(); loop_i ++){
+					theBoard[row][col].value = theBoard[row][col].pos_nums.get(loop_i);
+					theBoard[row][col].is_set = true;
+					if(this.valid_move(row, col)){
+						if(row != 8 && col != 8){
+							next_col = col + 1;
+							if(next_col > 8){
+								next_col = 0;
+								next_row = row + 1;
+							}
+
+							if(this.solve_rec(next_row, next_col)){
+								return true;
+							}else{
+								theBoard[row][col].value = 0;
+								theBoard[row][col].is_set = false;
+							}
+						}
+					}else{
+						return false;
+					}
+				}
+			
+			return false;
+		}
+	}
+
+	public boolean solved(){
+		for(int i = 0; i < 9; i ++){
+			for(int j = 0; j < 9; j ++){
+				if(!this.valid_row(i, j)){
+					return false;
+				}
+				if(!this.valid_col(i, j)){
+					return false;
+				}
+				if(!this.valid_square(i, j)){
+					return false;
+				}
+			}
+		}
+		return true;
+	}
 	
+	public boolean valid_row(int row, int col){
+		for(int i = 1; i < 9; i ++){
+			//System.out.println("current index: "+ (row+i)%9 +", "+ col);
+			if(theBoard[row][col].value == theBoard[(row + i)%9][col].value){
+				return false;
+			}
+		}
+		return true;
+	}
+
+	public boolean valid_col(int row, int col){
+		for(int i = 1; i < 9; i ++){
+			if(theBoard[row][col].value == theBoard[row][(col + i)%9].value){
+				return false;
+			}
+		}
+		return true;
+	}
+
+	public boolean valid_square(int row, int col){
+		int sq_row = row/3;
+		int sq_col = col/3;
+		
+		for(int i = sq_row * 3; i < 3; i ++){
+			for(int j = sq_col * 3; j < 3; j ++){
+				if((i != row) && (j != col)){
+					if(theBoard[row][col].value == theBoard[i][j].value){
+						return false;
+					}
+				}
+			}
+		}
+		return true;
+
+	}
+
+	public boolean valid_move(int row, int col){
+		if(!this.valid_row(row, col)){
+			return false;
+		}
+		if(!this.valid_col(row, col)){
+			return false;
+		}
+		if(!this.valid_square(row, col)){
+			return false;
+		}
+
+		return true;
+	}
 }//end board class
