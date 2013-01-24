@@ -47,7 +47,7 @@ public class sudoku {
 				//output that there is no solution
 				System.out.println("Test case "+ main_game_i +":");
 				System.out.println();
-				System.out.println("This board has no solution.");
+				System.out.println("No solution possible.");
 				System.out.println();
 				System.out.println();
 			}
