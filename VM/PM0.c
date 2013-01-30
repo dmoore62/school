@@ -115,7 +115,7 @@ int main(void){
           //LIT
           case 1: 
             sp ++;
-            stack[sp] = instr_ary[fetch_instr].m;
+            stack[sp - 1] = instr_ary[fetch_instr].m;
             pc ++;
             break;
 
@@ -125,8 +125,8 @@ int main(void){
               //RET
               case 0:
                 sp = bp - 1;
-                pc = stack[sp + 4];
-                bp = stack[sp + 3];
+                pc = stack[sp + 2];
+                bp = stack[sp + 1];
                 break;
 
               //NEG
@@ -255,17 +255,17 @@ int main(void){
 
           //STO
           case 4:
-            stack[ base(instr_ary[fetch_instr].l, bp, stack) + instr_ary[fetch_instr].m] = stack[sp];
+            stack[ base(instr_ary[fetch_instr].l, bp, stack) + instr_ary[fetch_instr].m - 1] = stack[sp - 1];
             sp = sp - 1;
             pc ++;
             break;
 
           //CAL
           case 5:
-            stack[sp + 1] = 0;
-            stack[sp + 2] = base(instr_ary[fetch_instr].l, bp, stack);
-            stack[sp + 3] = bp;
-            stack[sp + 4] = pc;
+            //stack[sp + 1] = 0;
+            stack[sp] = base(instr_ary[fetch_instr].l, bp, stack);
+            stack[sp + 1] = bp;
+            stack[sp + 2] = pc + 1;
             bp = sp + 1;
             pc = instr_ary[fetch_instr].m;
             break;
@@ -329,13 +329,13 @@ int main(void){
           fprintf(fpVMout, "\n");
          }//end bp if
 
-        //**********DELETE*****************BREAK FOR DEBUG
+        /**********DELETE*****************BREAK FOR DEBUG
         
         printf("1 for next step: ");
         scanf("%d", &next);
         if(next != 1){
           bp = 0;
-        }
+        }*/
       }//end while
 
 
