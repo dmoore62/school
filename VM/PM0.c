@@ -318,6 +318,11 @@ int main(void){
               fprintf(fpVMout, "%d ", 0);
             }
             fprintf(fpVMout, "\n");
+          }else if(bp > sp){
+            for(i = 0; i < sp + 3; i ++){
+              fprintf(fpVMout, "%d ", stack[i]);
+            }
+            fprintf(fpVMout, "\n");
           }else{
             for (i = 0; i < sp; i ++){
               fprintf(fpVMout, "%d ", stack[i]);
