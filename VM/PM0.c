@@ -175,6 +175,8 @@ int main(void){
 
               //ODD
               case 6:
+                stack[sp - 1] = stack[sp - 1] % 2;
+                pc++;
                 break;
 
               //MOD
