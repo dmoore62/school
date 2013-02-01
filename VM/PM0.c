@@ -106,8 +106,6 @@ int main(void){
        fprintf(fpVMout, "\t\t\t\t\t\t\tpc\tbp\tsp\tstack\n");
        fprintf(fpVMout, "Initial values\t\t\t\t%d\t%d\t%d\n", pc, bp, sp);
        
-       ///////////////////DEBUG
-       int next;
        //begin fetch - execution process
        while(bp != 0){
 
@@ -157,28 +155,28 @@ int main(void){
               //ADD
               case 2:
                 sp = sp - 1;
-                stack[sp] = stack[sp] + stack[sp];
+                stack[sp] = stack[sp] + stack[sp + 1];
                 
                 break;
 
               //SUB
               case 3:
                 sp = sp - 1;
-                stack[sp] = stack[sp] - stack[sp];
+                stack[sp] = stack[sp] - stack[sp + 1];
                 
                 break;
 
               //MUL
               case 4:
                 sp = sp - 1;
-                stack[sp] = stack[sp] * stack[sp];
+                stack[sp] = stack[sp] * stack[sp + 1];
                 
                 break;
 
               //DIV
               case 5:
                 sp = sp - 1;
-                stack[sp] = stack[sp] / stack[sp];
+                stack[sp] = stack[sp] / stack[sp + 1];
                 
                 break;
 
@@ -191,14 +189,14 @@ int main(void){
               //MOD
               case 7:
                 sp = sp - 1;
-                stack[sp] = stack[sp] % stack[sp];
+                stack[sp] = stack[sp] % stack[sp + 1];
                 
                 break;
 
               //EQL
               case 8:
                 sp = sp - 1;
-                if(stack[sp] == stack[sp]){
+                if(stack[sp] == stack[sp + 1]){
                   stack[sp] = 1;
                 }else{
                   stack[sp] = 0;
@@ -209,7 +207,7 @@ int main(void){
               //NEQ
               case 9:
                 sp = sp - 1;
-                if(stack[sp] != stack[sp]){
+                if(stack[sp] != stack[sp + 1]){
                   stack[sp] = 1;
                 }else{
                   stack[sp] = 0;
@@ -220,7 +218,7 @@ int main(void){
               //LSS
               case 10:
                 sp = sp - 1;
-                if(stack[sp] < stack[sp]){
+                if(stack[sp] < stack[sp + 1]){
                   stack[sp] = 1;
                 }else{
                   stack[sp] = 0;
@@ -231,7 +229,7 @@ int main(void){
               //LEQ
               case 11:
                 sp = sp - 1;
-                if(stack[sp] <= stack[sp]){
+                if(stack[sp] <= stack[sp + 1]){
                   stack[sp] = 1;
                 }else{
                   stack[sp] = 0;
@@ -242,7 +240,7 @@ int main(void){
               //GTR
               case 12:
                 sp = sp - 1;
-                if(stack[sp] > stack[sp]){
+                if(stack[sp] > stack[sp + 1]){
                   stack[sp] = 1;
                 }else{
                   stack[sp] = 0;
@@ -253,7 +251,7 @@ int main(void){
               //GEQ
               case 13:
                 sp = sp - 1;
-                if(stack[sp] >= stack[sp]){
+                if(stack[sp] >= stack[sp + 1]){
                   stack[sp] = 1;
                 }else{
                   stack[sp] = 0;
@@ -348,13 +346,6 @@ int main(void){
           fprintf(fpVMout, "\n");
          }//end bp if
 
-        /**********DELETE*****************BREAK FOR DEBUG
-        
-        printf("1 for next step: ");
-        scanf("%d", &next);
-        if(next != 1){
-          bp = 0;
-        }*/
       }//end while
 
 
