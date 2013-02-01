@@ -79,9 +79,12 @@ int main(void){
        for(print_index = 0; print_index < struct_index - 1; print_index ++){
                fprintf(fpout, "%d\t\t%s\t\t%d\t%d\n", print_index, instr_ary[print_index].op_code, instr_ary[print_index].l, instr_ary[print_index].m);
        }//end print for
-
+       
        //open file for VM output
        FILE* fpVMout = fopen("VMoutput.txt", "w");
+          if(fpVMout == NULL){
+            printf("NO FILE!!\n");
+          }
 
        //declare and init stack and program pointers
        int pc = 0;
@@ -90,18 +93,18 @@ int main(void){
        int break_index = 0;
        int stack[MAX_STACK_HEIGHT];
        int AR_breaks[MAX_LEXI_LEVELS];
-
-       for (i = 0; i < MAX_STACK_HEIGHT; i ++){
+       
+       for (i = 1; i <= MAX_STACK_HEIGHT - 1; i ++){
           stack[i] = 0;
        }
-
+       
        for(i = 0; i < MAX_LEXI_LEVELS; i ++){
           AR_breaks[i] = -1;
        }
 
        //write initial 2 lines to file
        fprintf(fpVMout, "\t\t\t\t\t\t\tpc\tbp\tsp\tstack\n");
-       fprintf(fpVMout, "Initial values\t\t\t\t%d\t%d\t%d\t%d\n", pc, bp, sp, 0);
+       fprintf(fpVMout, "Initial values\t\t\t\t%d\t%d\t%d\n", pc, bp, sp);
        
        ///////////////////DEBUG
        int next;
@@ -111,18 +114,22 @@ int main(void){
         //fetch
         int fetch_instr = 0;
         while(instr_ary[fetch_instr].line != pc) fetch_instr++;
-
+        
         //write instruction to VM file
         fprintf(fpVMout, "%d\t%s\t\t%d\t%d\t\t\t", instr_ary[fetch_instr].line, instr_ary[fetch_instr].op_code, instr_ary[fetch_instr].l, instr_ary[fetch_instr].m);
 
+
+        //bump program counter
+        pc ++;
+        
         //locate execution instructions and execute
         switch(instr_ary[fetch_instr].op){
 
           //LIT
           case 1: 
             sp ++;
-            stack[sp - 1] = instr_ary[fetch_instr].m;
-            pc ++;
+            stack[sp] = instr_ary[fetch_instr].m;
+            
             break;
 
           //OPR
@@ -131,125 +138,127 @@ int main(void){
               //RET
               case 0:
                 sp = bp - 1;
-                pc = stack[sp + 2];
-                bp = stack[sp + 1];
+                pc = stack[sp + 4];
+                bp = stack[sp + 3];
+                AR_breaks[break_index - 1] = -1;
+                break_index --;
                 break;
 
               //NEG
               case 1:
-                if (stack[sp - 1] <= 0){
-                  stack[sp - 1] = abs(stack[sp - 1]);
+                if (stack[sp] <= 0){
+                  stack[sp] = abs(stack[sp]);
                 }else{
-                  stack[sp - 1] = -(stack[sp - 1]);
+                  stack[sp] = -(stack[sp]);
                 }
-                pc ++;
+                
                 break;
 
               //ADD
               case 2:
                 sp = sp - 1;
-                stack[sp - 1] = stack[sp - 1] + stack[sp];
-                pc ++;
+                stack[sp] = stack[sp] + stack[sp];
+                
                 break;
 
               //SUB
               case 3:
                 sp = sp - 1;
-                stack[sp - 1] = stack[sp - 1] - stack[sp];
-                pc ++;
+                stack[sp] = stack[sp] - stack[sp];
+                
                 break;
 
               //MUL
               case 4:
                 sp = sp - 1;
-                stack[sp - 1] = stack[sp - 1] * stack[sp];
-                pc ++;
+                stack[sp] = stack[sp] * stack[sp];
+                
                 break;
 
               //DIV
               case 5:
                 sp = sp - 1;
-                stack[sp - 1] = stack[sp - 1] / stack[sp];
-                pc ++;
+                stack[sp] = stack[sp] / stack[sp];
+                
                 break;
 
               //ODD
               case 6:
-                stack[sp - 1] = stack[sp - 1] % 2;
+                stack[sp] = stack[sp] % 2;
                 pc++;
                 break;
 
               //MOD
               case 7:
                 sp = sp - 1;
-                stack[sp - 1] = stack[sp - 1] % stack[sp];
-                pc ++;
+                stack[sp] = stack[sp] % stack[sp];
+                
                 break;
 
               //EQL
               case 8:
                 sp = sp - 1;
-                if(stack[sp - 1] == stack[sp]){
-                  stack[sp - 1] = 1;
+                if(stack[sp] == stack[sp]){
+                  stack[sp] = 1;
                 }else{
-                  stack[sp - 1] = 0;
+                  stack[sp] = 0;
                 }
-                pc ++;
+                
                 break;
 
               //NEQ
               case 9:
                 sp = sp - 1;
-                if(stack[sp - 1] != stack[sp]){
-                  stack[sp - 1] = 1;
+                if(stack[sp] != stack[sp]){
+                  stack[sp] = 1;
                 }else{
-                  stack[sp - 1] = 0;
+                  stack[sp] = 0;
                 }
-                pc ++;
+                
                 break;
 
               //LSS
               case 10:
                 sp = sp - 1;
-                if(stack[sp - 1] < stack[sp]){
-                  stack[sp - 1] = 1;
+                if(stack[sp] < stack[sp]){
+                  stack[sp] = 1;
                 }else{
-                  stack[sp - 1] = 0;
+                  stack[sp] = 0;
                 }
-                pc ++;
+                
                 break;
 
               //LEQ
               case 11:
                 sp = sp - 1;
-                if(stack[sp - 1] <= stack[sp]){
-                  stack[sp - 1] = 1;
+                if(stack[sp] <= stack[sp]){
+                  stack[sp] = 1;
                 }else{
-                  stack[sp - 1] = 0;
+                  stack[sp] = 0;
                 }
-                pc ++;
+                
                 break;
 
               //GTR
               case 12:
                 sp = sp - 1;
-                if(stack[sp - 1] > stack[sp]){
-                  stack[sp - 1] = 1;
+                if(stack[sp] > stack[sp]){
+                  stack[sp] = 1;
                 }else{
-                  stack[sp - 1] = 0;
+                  stack[sp] = 0;
                 }
-                pc ++;
+                
                 break;
 
               //GEQ
               case 13:
                 sp = sp - 1;
-                if(stack[sp - 1] >= stack[sp]){
-                  stack[sp - 1] = 1;
+                if(stack[sp] >= stack[sp]){
+                  stack[sp] = 1;
                 }else{
-                  stack[sp - 1] = 0;
+                  stack[sp] = 0;
                 }
-                pc ++;
+                
                 break;
             }//end switch
             break;
@@ -257,25 +266,25 @@ int main(void){
           //LOD  
           case 3:
             sp = sp + 1;
-            stack[sp - 1] = stack[ base(instr_ary[fetch_instr].l, bp, stack) + instr_ary[fetch_instr].m];
-            pc ++;
+            stack[sp] = stack[ base(instr_ary[fetch_instr].l, bp, stack) + instr_ary[fetch_instr].m];
+            
             break;
 
           //STO
           case 4:
-            stack[ base(instr_ary[fetch_instr].l, bp, stack) + instr_ary[fetch_instr].m - 1] = stack[sp - 1];
+            stack[ base(instr_ary[fetch_instr].l, bp, stack) + instr_ary[fetch_instr].m] = stack[sp];
             sp = sp - 1;
-            pc ++;
+            
             break;
 
           //CAL
           case 5:
-            //stack[sp + 1] = 0;
-            stack[sp] = base(instr_ary[fetch_instr].l, bp, stack);
-            stack[sp + 1] = bp;
-            stack[sp + 2] = pc + 1;
+            stack[sp + 1] = 0;
+            stack[sp + 2] = base(instr_ary[fetch_instr].l, bp, stack);
+            stack[sp + 3] = bp;
+            stack[sp + 4] = pc;
             bp = sp + 1;
-            AR_breaks[break_index] = bp - 1;
+            AR_breaks[break_index] = bp;
             break_index ++;
             pc = instr_ary[fetch_instr].m;
             break;
@@ -283,37 +292,38 @@ int main(void){
           //INC
           case 6:
             sp = sp + instr_ary[fetch_instr].m;
-            pc ++;
+            
             break;
 
           //JMP
           case 7:
             pc = instr_ary[fetch_instr].m;
+            
             break;
 
           //JPC
           case 8:
-            if(stack[sp - 1] == 0){
+            if(stack[sp] == 0){
               pc = instr_ary[fetch_instr].m;
             }else{
-              pc ++;
+              
             }
             sp = sp - 1;
             break;
 
           //SIO
           case 9:
-            printf("POPPED OFF STACK: %d\n", stack[sp - 1]);
+            printf("POPPED OFF STACK: %d\n", stack[sp]);
             sp = sp - 1;
-            pc ++;
+            
             break;
 
           //SIO
           case 10:
             sp = sp + 1;
             printf("INPUT INT TO BE PLACED ON STACK: ");
-            scanf("%d", stack[sp - 1]);
-            pc ++;
+            scanf("%d", stack[sp]);
+            
             break;
 
         }//end switch
@@ -323,32 +333,16 @@ int main(void){
 
          if(bp != 0){
 
-          if(sp == 0){
-            for (i = 0; i < 5; i ++){
-              fprintf(fpVMout, "%d ", 0);
+          for (i = 1; i <= sp; i ++){
+            for(j = 0; j < MAX_LEXI_LEVELS; j ++){
+              if(i == AR_breaks[j]){
+                fprintf(fpVMout, "|");
+              }  
             }
-            fprintf(fpVMout, "\n");
-          }else if(bp > sp){
-            for(i = 0; i < sp + 3; i ++){
-              for(j = 0; j < MAX_LEXI_LEVELS; j ++){
-                if(i == AR_breaks[j]){
-                  fprintf(fpVMout, "|");
-                }  
-              }
-              fprintf(fpVMout, "%d ", stack[i]);
-            }
-            fprintf(fpVMout, "\n");
-          }else{
-            for (i = 0; i < sp; i ++){
-              for(j = 0; j < MAX_LEXI_LEVELS; j ++){
-                if(i == AR_breaks[j]){
-                  fprintf(fpVMout, "|");
-                }  
-              }
-              fprintf(fpVMout, "%d ", stack[i]);
-            }
-            fprintf(fpVMout, "\n");
-          }//end sp if
+            fprintf(fpVMout, "%d ", stack[i]);
+          }
+          fprintf(fpVMout, "\n");
+          
 
          }else{
           fprintf(fpVMout, "\n");
@@ -375,7 +369,7 @@ int base(int l, int base, int* s){
 //base statements
        while(l > 0)
        {
-               b1 = s[b1];
+               b1 = s[b1 + 1];
                l --;        
        }
        return b1;    
