@@ -104,7 +104,7 @@ int main(void){
 
        //write initial 2 lines to file
        fprintf(fpVMout, "\t\t\t\t\t\t\tpc\tbp\tsp\tstack\n");
-       fprintf(fpVMout, "Initial values\t\t\t\t\t\t%d\t%d\t%d\n", pc, bp, sp);
+       fprintf(fpVMout, "Initial values\t\t\t\t\t%d\t%d\t%d\n", pc, bp, sp);
        
        //begin fetch - execution process
        while(bp != 0){
