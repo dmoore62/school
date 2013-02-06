@@ -68,7 +68,7 @@ public class Cables {
 					}
 
 					//check if point are connected
-					if(parents.find(all_wires.get(i).end) != all_wires.get(i).origin){
+					if(parents.find(all_wires.get(i).end) != parents.find(all_wires.get(i).origin)){
 						//connect wires and add distance and increment counter
 						parents.union(all_wires.get(i).origin, all_wires.get(i).end);
 						linked_wire ++;
@@ -127,17 +127,17 @@ class DisjointSet {
 	public DisjointSet(int size){
 		set = new int [size];
 
+
 		for(int s = 0; s < set.length; s ++){
-			set[s] = -1;
+			set[s] = s;
 		}
 	}
 
 	public int find(int id) {
-		if(set[id] < 0){
-			return id;
+		while(id != set[id]){
+			id = set[id];
 		}
-		set[id] = find(set[id]);
-		return set[id];
+		return id;
 	}
 
 	public void union(int origin, int end){
