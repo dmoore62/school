@@ -141,7 +141,7 @@ class DisjointSet {
 	}
 
 	public void union(int origin, int end){
-		set[end] = origin;
+		set[find(end)] = find(origin);
 	}
 
 }
