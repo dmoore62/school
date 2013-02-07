@@ -3,6 +3,8 @@
 */
 import java.util.*;
 
+
+//Cables class 
 public class Cables {
 
 	public static void main(String args[]){
@@ -67,7 +69,7 @@ public class Cables {
 						break;
 					}
 
-					//check if point are connected
+					//check if points are connected
 					if(parents.find(all_wires.get(i).end) != parents.find(all_wires.get(i).origin)){
 						//connect wires and add distance and increment counter
 						parents.union(all_wires.get(i).origin, all_wires.get(i).end);
@@ -76,6 +78,8 @@ public class Cables {
 					}
 				}
 			}
+
+			//Output single line and get the next main_index
 			System.out.printf("%.2f\n", sum);
 
 			main_index = inFile.nextInt();
@@ -87,6 +91,9 @@ public class Cables {
 
 }//end Cables class
 
+//Point Class 
+//Every point has an x,y value
+//and carries the index it was created at 
 class Point {
 	public int x;
 	public int y;
@@ -100,6 +107,10 @@ class Point {
 
 }//end Point class
 
+
+//Wire Class
+//Constructor creates origin and end using point indexes
+//and calculates distance based on point positions
 class Wire {
 	public int origin;
 	public int end;
@@ -112,6 +123,10 @@ class Wire {
 	}
 }
 
+//Custom Comparator Class
+//Compares wire lengths and returns
+//-1 for less, 0 for same, 1 for more
+//used in object sort
 class WireLengthComparator implements Comparator<Wire> {
 
 	@Override
@@ -120,6 +135,10 @@ class WireLengthComparator implements Comparator<Wire> {
 	}
 }
 
+//DisjointSet Class
+//Constructor creates array where index is the same as value
+//find method finds the Disjoint Set the element belongs to
+//union method joins end set with origin set
 class DisjointSet {
 
 	public int[] set;
