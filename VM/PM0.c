@@ -10,7 +10,7 @@
 struct instruction{
        int line; 
        int op;
-       char *op_code;// = (char *)malloc(3 * sizeof(char));
+       char *op_code;
        int l;
        int m;       
 };
