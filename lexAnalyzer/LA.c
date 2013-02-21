@@ -76,7 +76,7 @@ int main(void){
 	fpin = fopen("test.in", "r");
 
 	fprintf(fpout,  "Lexeme Table:\n");
-	fprintf(fpout, "lexeme\ttoken type\n");
+	fprintf(fpout, "lexeme\t\ttoken type\n");
 	while((ch = fgetc(fpin)) != EOF){
 		
 		if(cur_id == NULL){
@@ -101,44 +101,68 @@ int main(void){
 							switch(ret_type){
 								case 0: //const
 									fprintf(fpout, "%s\t\t%d\n", cur_id, (enum TOKEN) constsym);
+									pass_str = int_to_string(pass_str, (enum TOKEN) constsym);
+									ll = add_rear(ll, pass_str);
 									break;
 								case 1: //int
-									fprintf(fpout, "%s\t\t%d\n", cur_id, (enum TOKEN) intsym);
+									fprintf(fpout, "%s\t\t\t%d\n", cur_id, (enum TOKEN) intsym);
 									pass_str = int_to_string(pass_str, (enum TOKEN) intsym);
 									ll = add_rear(ll, pass_str);
 									break;
 								case 2: //procedure
 									fprintf(fpout, "%s\t\t%d\n", cur_id, (enum TOKEN) procsym);
+									pass_str = int_to_string(pass_str, (enum TOKEN) procsym);
+									ll = add_rear(ll, pass_str);
 									break;
 								case 3:	//call
-									fprintf(fpout, "%s\t\t%d\n", cur_id, (enum TOKEN) callsym);
+									fprintf(fpout, "%s\t\t\t%d\n", cur_id, (enum TOKEN) callsym);
+									pass_str = int_to_string(pass_str, (enum TOKEN) callsym);
+									ll = add_rear(ll, pass_str);
 									break;
 								case 4: //begin
 									fprintf(fpout, "%s\t\t%d\n", cur_id, (enum TOKEN) beginsym);
+									pass_str = int_to_string(pass_str, (enum TOKEN) beginsym);
+									ll = add_rear(ll, pass_str);
 									break;
 								case 5: //end
-									fprintf(fpout, "%s\t\t%d\n", cur_id, (enum TOKEN) endsym);
+									fprintf(fpout, "%s\t\t\t%d\n", cur_id, (enum TOKEN) endsym);
+									pass_str = int_to_string(pass_str, (enum TOKEN) endsym);
+									ll = add_rear(ll, pass_str);
 									break;
 								case 6: //if
-									fprintf(fpout, "%s\t\t%d\n", cur_id, (enum TOKEN) ifsym);
+									fprintf(fpout, "%s\t\t\t%d\n", cur_id, (enum TOKEN) ifsym);
+									pass_str = int_to_string(pass_str, (enum TOKEN) ifsym);
+									ll = add_rear(ll, pass_str);
 									break;
 								case 7: //then
-									fprintf(fpout, "%s\t\t%d\n", cur_id, (enum TOKEN) thensym);
+									fprintf(fpout, "%s\t\t\t%d\n", cur_id, (enum TOKEN) thensym);
+									pass_str = int_to_string(pass_str, (enum TOKEN) thensym);
+									ll = add_rear(ll, pass_str);
 									break;
 								case 8: //else
-									fprintf(fpout, "%s\t\t%d\n", cur_id, (enum TOKEN) elsesym);
+									fprintf(fpout, "%s\t\t\t%d\n", cur_id, (enum TOKEN) elsesym);
+									pass_str = int_to_string(pass_str, (enum TOKEN) elsesym);
+									ll = add_rear(ll, pass_str);
 									break;
 								case 9: //while
 									fprintf(fpout, "%s\t\t%d\n", cur_id, (enum TOKEN) whilesym);
+									pass_str = int_to_string(pass_str, (enum TOKEN) whilesym);
+									ll = add_rear(ll, pass_str);
 									break;
 								case 10: //do
-									fprintf(fpout, "%s\t\t%d\n", cur_id, (enum TOKEN) dosym);
+									fprintf(fpout, "%s\t\t\t%d\n", cur_id, (enum TOKEN) dosym);
+									pass_str = int_to_string(pass_str, (enum TOKEN) dosym);
+									ll = add_rear(ll, pass_str);
 									break;
 								case 11: //read
-									fprintf(fpout, "%s\t\t%d\n", cur_id, (enum TOKEN) readsym);
+									fprintf(fpout, "%s\t\t\t%d\n", cur_id, (enum TOKEN) readsym);
+									pass_str = int_to_string(pass_str, (enum TOKEN) readsym);
+									ll = add_rear(ll, pass_str);
 									break;
 								case 12: //write
 									fprintf(fpout, "%s\t\t%d\n", cur_id, (enum TOKEN) writesym);
+									pass_str = int_to_string(pass_str, (enum TOKEN) writesym);
+									ll = add_rear(ll, pass_str);
 									break;
 							}//end switch
 
@@ -174,26 +198,38 @@ int main(void){
 				if(ret_sym >= 0){
 					for(i = 0, end = strlen(cur_id); i < end; i ++){
 							if(!isdigit(cur_id[i])){
-								fprintf(fpout, "%s\t\t%d\n", cur_id, (enum TOKEN) identsym);
+								fprintf(fpout, "%s\t\t\t%d\n", cur_id, (enum TOKEN) identsym);
+								pass_str = int_to_string(pass_str, (enum TOKEN) identsym);
+								ll = add_rear(ll, pass_str);
+								ll = add_rear(ll, cur_id);
 								break;
 							}
 							if(isdigit(cur_id[i]) && i == (end - 1)){
-								fprintf(fpout, "%s\t\t%d\n", cur_id, (enum TOKEN) numbersym);
+								fprintf(fpout, "%s\t\t\t%d\n", cur_id, (enum TOKEN) numbersym);
+								pass_str = int_to_string(pass_str, (enum TOKEN) numbersym);
+								ll = add_rear(ll, pass_str);
+								ll = add_rear(ll, cur_id);
 							}
 						}
 					switch(ret_sym){
 
 						case 0: //+
 							
-							fprintf(fpout, "%c\t\t%d\n", ch, (enum TOKEN) plussym);
+							fprintf(fpout, "%c\t\t\t%d\n", ch, (enum TOKEN) plussym);
+							pass_str = int_to_string(pass_str, (enum TOKEN) plussym);
+							ll = add_rear(ll, pass_str);
 							break;
 						case 1: //-
 							
-							fprintf(fpout, "%c\t\t%d\n", ch, (enum TOKEN) minussym);
+							fprintf(fpout, "%c\t\t\t%d\n", ch, (enum TOKEN) minussym);
+							pass_str = int_to_string(pass_str, (enum TOKEN) minussym);
+							ll = add_rear(ll, pass_str);
 							break;
 						case 2: //*
 							
-							fprintf(fpout, "%c\t\t%d\n", ch, (enum TOKEN) multsym);
+							fprintf(fpout, "%c\t\t\t%d\n", ch, (enum TOKEN) multsym);
+							pass_str = int_to_string(pass_str, (enum TOKEN) multsym);
+							ll = add_rear(ll, pass_str);
 							break;
 						case 3: ///
 							next_ch = fgetc(fpin);
@@ -213,58 +249,85 @@ int main(void){
 
 								}
 							}else{
-								fprintf(fpout, "%c\t\t%d\n", ch, (enum TOKEN) slashsym);
+								fprintf(fpout, "%c\t\t\t%d\n", ch, (enum TOKEN) slashsym);
+								pass_str = int_to_string(pass_str, (enum TOKEN) slashsym);
+								ll = add_rear(ll, pass_str);
+
 							}
 							break;
 						case 4: //(
 							
-							fprintf(fpout, "%c\t\t%d\n", ch, (enum TOKEN) lparentsym);
+							fprintf(fpout, "%c\t\t\t%d\n", ch, (enum TOKEN) lparentsym);
+							pass_str = int_to_string(pass_str, (enum TOKEN) lparentsym);
+							ll = add_rear(ll, pass_str);
 							break;
 						case 5: //)
 							
-							fprintf(fpout, "%c\t\t%d\n", ch, (enum TOKEN) rparentsym);
+							fprintf(fpout, "%c\t\t\t%d\n", ch, (enum TOKEN) rparentsym);
+							pass_str = int_to_string(pass_str, (enum TOKEN) rparentsym);
+							ll = add_rear(ll, pass_str);
 							break;
 						case 6: //=
 							next_ch = fgetc(fpin);
 							if(next_ch == '<'){
-								fprintf(fpout, "=<\t\t%d\n", (enum TOKEN) leqsym);
+								fprintf(fpout, "=<\t\t\t%d\n", (enum TOKEN) leqsym);
+								pass_str = int_to_string(pass_str, (enum TOKEN) leqsym);
+								ll = add_rear(ll, pass_str);
 								next_ch = '\0';
 							}else if(next_ch == '>'){
-								fprintf(fpout, "=>\t\t%d\n", (enum TOKEN) geqsym);
+								fprintf(fpout, "=>\t\t\t%d\n", (enum TOKEN) geqsym);
+								pass_str = int_to_string(pass_str, (enum TOKEN) geqsym);
+								ll = add_rear(ll, pass_str);
 								next_ch = '\0';
 							}else{							
-								fprintf(fpout, "%c\t\t%d\n", ch, (enum TOKEN) eqsym);
+								fprintf(fpout, "%c\t\t\t%d\n", ch, (enum TOKEN) eqsym);
+								pass_str = int_to_string(pass_str, (enum TOKEN) eqsym);
+								ll = add_rear(ll, pass_str);
 							}
 							break;
 						case 7: //,
 							
-							fprintf(fpout, "%c\t\t%d\n", ch, (enum TOKEN) commasym);
+							fprintf(fpout, "%c\t\t\t%d\n", ch, (enum TOKEN) commasym);
+							pass_str = int_to_string(pass_str, (enum TOKEN) commasym);
+							ll = add_rear(ll, pass_str);
 							break;
 						case 8: //.
 							
-							fprintf(fpout, "%c\t\t%d\n", ch, (enum TOKEN) periodsym);
+							fprintf(fpout, "%c\t\t\t%d\n", ch, (enum TOKEN) periodsym);
+							pass_str = int_to_string(pass_str, (enum TOKEN) periodsym);
+							ll = add_rear(ll, pass_str);
 							break;
 						case 9: //<
 							next_ch = fgetc(fpin);
 							if(next_ch == '>'){
-								fprintf(fpout, "<>\t\t%d\n", (enum TOKEN) neqsym);
+								fprintf(fpout, "<>\t\t\t%d\n", (enum TOKEN) neqsym);
+								pass_str = int_to_string(pass_str, (enum TOKEN) neqsym);
+								ll = add_rear(ll, pass_str);
 							}else{
-								fprintf(fpout, "%c\t\t%d\n", ch, (enum TOKEN) lessym);
+								fprintf(fpout, "%c\t\t\t%d\n", ch, (enum TOKEN) lessym);
+								pass_str = int_to_string(pass_str, (enum TOKEN) lessym);
+								ll = add_rear(ll, pass_str);
 							}
 							break;
 						case 10: //>
 							
-							fprintf(fpout, "%c\t\t%d\n", ch, (enum TOKEN) gtrsym);
+							fprintf(fpout, "%c\t\t\t%d\n", ch, (enum TOKEN) gtrsym);
+							pass_str = int_to_string(pass_str, (enum TOKEN) gtrsym);
+							ll = add_rear(ll, pass_str);
 							break;
 						case 11: //;
 							
-							fprintf(fpout, "%c\t\t%d\n", ch, (enum TOKEN) semicolonsym);
+							fprintf(fpout, "%c\t\t\t%d\n", ch, (enum TOKEN) semicolonsym);
+							pass_str = int_to_string(pass_str, (enum TOKEN) semicolonsym);
+							ll = add_rear(ll, pass_str);
 							break;
 						case 12: //:
 							next_ch = fgetc(fpin);
 							if(next_ch == '='){
 								
-								fprintf(fpout, ":=\t\t%d\n", (enum TOKEN) becomessym);
+								fprintf(fpout, ":=\t\t\t%d\n", (enum TOKEN) becomessym);
+								pass_str = int_to_string(pass_str, (enum TOKEN) becomessym);
+								ll = add_rear(ll, pass_str);
 								next_ch = '\0';
 							}
 							break;
