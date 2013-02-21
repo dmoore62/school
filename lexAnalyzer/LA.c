@@ -6,18 +6,28 @@
 //GLOBALS
 
 //function declarations
+struct node{
+	char* value;
+	struct node* next;
+	};
+
 enum TOKEN{
 	nulsym = 1, identsym, numbersym, plussym, minussym,
-	multsym, slahsym, oddsym, eqsym, neqsym, lessym, leqsym,
+	multsym, slashsym, oddsym, eqsym, neqsym, lessym, leqsym,
 	gtrsym, geqsym, lparentsym, rparentsym, commasym, semicolonsym,
 	periodsym, becomessym, beginsym, endsym, ifsym, thensym,
 	whilesym, dosym, callsym, constsym, intsym, procsym, writesym,
 	readsym, elsesym } token_type;
 
+struct node* add_rear(struct node* ll, char* val);
+
+void print_list(struct node* list, FILE* fpout);
+
 int check_word(const char** words, char* cur_id);
 
-int check_sym(char* syms, char ch);
+int check_sym(char syms[], char ch);
 
+char* int_to_string(char* pass_str, int d);
 
 int main(void){
 	FILE* fpin = fopen("test.in", "r");
@@ -40,28 +50,41 @@ int main(void){
 	res_words[11] = "read";
 	res_words[12] = "write";
 
-	char* lex_list = (char*)malloc(20*sizeof(char));
+	struct node* ll = NULL;
 	int lex_list_i = 0;
 	int lex_list_size = 20;
-	char* cur_id = (char*)malloc(13*sizeof(char));
+	char* cur_id = (char*)calloc(13, sizeof(char));
+	char* pass_str = NULL;
 	int cur_index = 0;
 	int ret_type;
 	int ret_sym;
 	int end;
+	int i;
 	int again;
 
 	char ch;
-	char next_ch;
+	char next_ch = '\0';
+
+	fprintf(fpout, "Source Code:\n");
+	while((ch = fgetc(fpin)) != EOF){
+		fprintf(fpout, "%c", ch);
+	}
+	fprintf(fpout, "\n\n");
+
+	fclose(fpin);
+
+	fpin = fopen("test.in", "r");
 
 	fprintf(fpout,  "Lexeme Table:\n");
 	fprintf(fpout, "lexeme\ttoken type\n");
 	while((ch = fgetc(fpin)) != EOF){
-
+		
 		if(cur_id == NULL){
-			cur_id = (char*)malloc(13*sizeof(char));
-			if(next_ch != NULL){
+			cur_id = (char*)calloc(13, sizeof(char));
+			if(next_ch != '\0'){
 				cur_id[cur_index] = next_ch;
 				cur_index ++;
+				
 			}
 		}
 		
@@ -71,16 +94,18 @@ int main(void){
 					cur_id[cur_index] = ch;
 					cur_index++;
 					if(isdigit(cur_id[0])){
-						printf("ERROR: Variable does not start with a letter")
+						printf("ERROR: Variable does not start with a letter\n");
 					}else{
 						ret_type = check_word(res_words, cur_id);
-						if(ret_type > 0){
+						if(ret_type >= 0){
 							switch(ret_type){
 								case 0: //const
 									fprintf(fpout, "%s\t\t%d\n", cur_id, (enum TOKEN) constsym);
 									break;
 								case 1: //int
 									fprintf(fpout, "%s\t\t%d\n", cur_id, (enum TOKEN) intsym);
+									pass_str = int_to_string(pass_str, (enum TOKEN) intsym);
+									ll = add_rear(ll, pass_str);
 									break;
 								case 2: //procedure
 									fprintf(fpout, "%s\t\t%d\n", cur_id, (enum TOKEN) procsym);
@@ -117,13 +142,14 @@ int main(void){
 									break;
 							}//end switch
 
+							
 							cur_id = NULL;
 							cur_index = 0;
-
+							
 						}
 					}
 				}else{
-					printf("ERROR: Name too long!");
+					printf("ERROR: Name too long!\n");
 				}
 			}else if(isdigit(ch)){ 
 				if(cur_index == 5){
@@ -132,7 +158,7 @@ int main(void){
 							break;
 						}
 						if(i == 4){
-							printf("ERROR: Number too long");
+							printf("ERROR: Number too long\n");
 						}
 					}
 				}
@@ -140,14 +166,13 @@ int main(void){
 					cur_id[cur_index] = ch;
 					cur_index ++;
 				}else{
-					printf("ERROR: Name too long");
+					printf("ERROR: Name too long\n");
 				}
 			}else if(ispunct(ch)){
 				ret_sym = check_sym(syms, ch);
-				if(ret_sym > 0){
-					switch(ret_sym){
-
-						for(i = 0, end = strlen(cur_id); i < end; i ++){
+				
+				if(ret_sym >= 0){
+					for(i = 0, end = strlen(cur_id); i < end; i ++){
 							if(!isdigit(cur_id[i])){
 								fprintf(fpout, "%s\t\t%d\n", cur_id, (enum TOKEN) identsym);
 								break;
@@ -156,6 +181,7 @@ int main(void){
 								fprintf(fpout, "%s\t\t%d\n", cur_id, (enum TOKEN) numbersym);
 							}
 						}
+					switch(ret_sym){
 
 						case 0: //+
 							
@@ -179,9 +205,9 @@ int main(void){
 										next_ch = fgetc(fpin);
 									}
 									next_ch = fgetc(fpin);
-									if(next_ch == "/"){
+									if(next_ch == '/'){
 										again = 0;
-										next_ch = NULL;
+										next_ch = '\0';
 										break;
 									}
 
@@ -202,12 +228,12 @@ int main(void){
 							next_ch = fgetc(fpin);
 							if(next_ch == '<'){
 								fprintf(fpout, "=<\t\t%d\n", (enum TOKEN) leqsym);
-								next_ch = NULL;
+								next_ch = '\0';
 							}else if(next_ch == '>'){
 								fprintf(fpout, "=>\t\t%d\n", (enum TOKEN) geqsym);
-								next_ch = NULL;
+								next_ch = '\0';
 							}else{							
-								fprintf(fpout, "%c\t\t%d\n", ch, (enum TOKEN) equalsym);
+								fprintf(fpout, "%c\t\t%d\n", ch, (enum TOKEN) eqsym);
 							}
 							break;
 						case 7: //,
@@ -221,9 +247,9 @@ int main(void){
 						case 9: //<
 							next_ch = fgetc(fpin);
 							if(next_ch == '>'){
-								fprintf(fpout, "<>\t\t%d\n", (enum TOKEN) equalsym);
+								fprintf(fpout, "<>\t\t%d\n", (enum TOKEN) neqsym);
 							}else{
-								fprintf(fpout, "%c\t\t%d\n", ch, (enum TOKEN) lesssym);
+								fprintf(fpout, "%c\t\t%d\n", ch, (enum TOKEN) lessym);
 							}
 							break;
 						case 10: //>
@@ -237,9 +263,9 @@ int main(void){
 						case 12: //:
 							next_ch = fgetc(fpin);
 							if(next_ch == '='){
-								fprintf(fpout, "%s\t\t%d\n", cur_id, (enum TOKEN) identsym);
+								
 								fprintf(fpout, ":=\t\t%d\n", (enum TOKEN) becomessym);
-								next_ch = NULL;
+								next_ch = '\0';
 							}
 							break;
 					}//end switch
@@ -257,6 +283,9 @@ int main(void){
 
 	}
 
+	fprintf(fpout, "\nLexeme List:\n");
+	print_list(ll, fpout);
+
 	fclose(fpin);
 	fclose(fpout);
 
@@ -272,12 +301,57 @@ int check_word(const char** words, char* cur_id){
 	return -1;
 }//end check_word
 
-int check_sym(char* sym, char ch){
+int check_sym(char sym[], char ch){
 	int i;
+	
 	for(i = 0; i < 13; i++){
-		if(sym[1] == ch){
+		if(sym[i] == ch){
 			return i;
 		}
 	}
 	return -1;
-}
+}//end check_sym
+
+struct node* add_rear(struct node* ll, char* val){
+	
+	struct node* new = NULL;
+	struct node* current = NULL;
+
+	new = (struct node*)malloc(sizeof(struct node));
+
+	new->value = (char*)malloc(11*sizeof(char));
+
+	strcpy(new->value, val);
+	
+	new->next = NULL;
+
+	current = ll;
+
+	if(ll == NULL){
+		return new;
+	}
+
+	while(current->next != NULL){
+		current = current->next;
+	}
+
+	current->next = new;
+
+	return ll;
+}//end add_rear
+
+void print_list(struct node* ll, FILE* fpout){
+	while (ll != NULL){
+		fprintf(fpout, "%s ", ll->value);
+		ll = ll->next;
+	}
+}//end print_list
+
+char* int_to_string(char* pass_str, int d){
+	pass_str = NULL;
+
+	pass_str = (char *)calloc(11, sizeof(char));
+	sprintf(pass_str, "%d", d);
+
+	return pass_str;
+}//end int_to_string

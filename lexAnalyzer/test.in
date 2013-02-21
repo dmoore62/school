@@ -1,5 +1,5 @@
 int x, y;
 begin
-	y := 3;
+	y := 3 - 5;
 	x := y + 56;
 end.
