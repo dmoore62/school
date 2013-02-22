@@ -84,6 +84,7 @@ int main(void){
 			if(next_ch != '\0'){
 				cur_id[cur_index] = next_ch;
 				cur_index ++;
+				next_ch = '\0';
 				
 			}
 		}
@@ -135,12 +136,12 @@ int main(void){
 									ll = add_rear(ll, pass_str);
 									break;
 								case 2: //procedure
-									fprintf(fpout, "%s\t\t%d\n", cur_id, (enum TOKEN) procsym);
+									fprintf(fpout, "%s\t%d\n", cur_id, (enum TOKEN) procsym);
 									pass_str = int_to_string(pass_str, (enum TOKEN) procsym);
 									ll = add_rear(ll, pass_str);
 									break;
 								case 3:	//call
-									fprintf(fpout, "%s\t\t\t%d\n", cur_id, (enum TOKEN) callsym);
+									fprintf(fpout, "%s\t\t%d\n", cur_id, (enum TOKEN) callsym);
 									pass_str = int_to_string(pass_str, (enum TOKEN) callsym);
 									ll = add_rear(ll, pass_str);
 									break;
@@ -160,7 +161,7 @@ int main(void){
 									ll = add_rear(ll, pass_str);
 									break;
 								case 7: //then
-									fprintf(fpout, "%s\t\t\t%d\n", cur_id, (enum TOKEN) thensym);
+									fprintf(fpout, "%s\t\t%d\n", cur_id, (enum TOKEN) thensym);
 									pass_str = int_to_string(pass_str, (enum TOKEN) thensym);
 									ll = add_rear(ll, pass_str);
 									break;
@@ -341,6 +342,7 @@ int main(void){
 								if(isblank(next_ch)){
 									next_ch = '\0';
 								}
+								
 							}else{
 								printf("ERROR: Invalid Symbols\n");
 							}
@@ -348,8 +350,7 @@ int main(void){
 
 
 			
-		}else{
-			printf("ERROR: invalid input");
+		
 		}
 	}
 
