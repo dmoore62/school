@@ -126,7 +126,7 @@ int main(void){
 						if(ret_type >= 0){
 							switch(ret_type){
 								case 0: //const
-									fprintf(fpout, "%s\t\t%d\n", cur_id, (enum TOKEN) constsym);
+									fprintf(fpout, "%s\t\t\t%d\n", cur_id, (enum TOKEN) constsym);
 									pass_str = int_to_string(pass_str, (enum TOKEN) constsym);
 									ll = add_rear(ll, pass_str);
 									break;
@@ -136,17 +136,17 @@ int main(void){
 									ll = add_rear(ll, pass_str);
 									break;
 								case 2: //procedure
-									fprintf(fpout, "%s\t%d\n", cur_id, (enum TOKEN) procsym);
+									fprintf(fpout, "%s\t\t%d\n", cur_id, (enum TOKEN) procsym);
 									pass_str = int_to_string(pass_str, (enum TOKEN) procsym);
 									ll = add_rear(ll, pass_str);
 									break;
 								case 3:	//call
-									fprintf(fpout, "%s\t\t%d\n", cur_id, (enum TOKEN) callsym);
+									fprintf(fpout, "%s\t\t\t%d\n", cur_id, (enum TOKEN) callsym);
 									pass_str = int_to_string(pass_str, (enum TOKEN) callsym);
 									ll = add_rear(ll, pass_str);
 									break;
 								case 4: //begin
-									fprintf(fpout, "%s\t\t%d\n", cur_id, (enum TOKEN) beginsym);
+									fprintf(fpout, "%s\t\t\t%d\n", cur_id, (enum TOKEN) beginsym);
 									pass_str = int_to_string(pass_str, (enum TOKEN) beginsym);
 									ll = add_rear(ll, pass_str);
 									break;
@@ -161,7 +161,7 @@ int main(void){
 									ll = add_rear(ll, pass_str);
 									break;
 								case 7: //then
-									fprintf(fpout, "%s\t\t%d\n", cur_id, (enum TOKEN) thensym);
+									fprintf(fpout, "%s\t\t\t%d\n", cur_id, (enum TOKEN) thensym);
 									pass_str = int_to_string(pass_str, (enum TOKEN) thensym);
 									ll = add_rear(ll, pass_str);
 									break;
@@ -171,7 +171,7 @@ int main(void){
 									ll = add_rear(ll, pass_str);
 									break;
 								case 9: //while
-									fprintf(fpout, "%s\t\t%d\n", cur_id, (enum TOKEN) whilesym);
+									fprintf(fpout, "%s\t\t\t%d\n", cur_id, (enum TOKEN) whilesym);
 									pass_str = int_to_string(pass_str, (enum TOKEN) whilesym);
 									ll = add_rear(ll, pass_str);
 									break;
@@ -186,7 +186,7 @@ int main(void){
 									ll = add_rear(ll, pass_str);
 									break;
 								case 12: //write
-									fprintf(fpout, "%s\t\t%d\n", cur_id, (enum TOKEN) writesym);
+									fprintf(fpout, "%s\t\t\t%d\n", cur_id, (enum TOKEN) writesym);
 									pass_str = int_to_string(pass_str, (enum TOKEN) writesym);
 									ll = add_rear(ll, pass_str);
 									break;
