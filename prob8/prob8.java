@@ -12,9 +12,8 @@ public class prob8 {
 
 		Scanner inFile = new Scanner(System.in);
 
-		int num_puzzles, num_moves;
+		int num_puzzles, solution;
 		int i;
-		board next;
 
 		num_puzzles = inFile.nextInt();
 
@@ -34,19 +33,65 @@ public class prob8 {
 			q.offer(initial_board);
 			t.put(initial_board.asString, 0);
 
-			while(q.size() > 0){
-				next = q.poll();
-				num_moves = t.get(next.asString);
-				if(next.solved()){
-					return num_moves;
-				}else{
-					
-				}
-			}//end while queue
+			solution = bfs(initial_board, q, t);		
+
+			System.out.println(solution);
 			
 		}//end main for loop
 
 	}//end main method
+
+	public static int bfs(board initial_board, Queue q, Map t){
+
+		board next;
+		int num_moves;
+		int position;
+
+		while(q.size() > 0){
+				next = q.poll();
+				num_moves = (int)t.get(next.asString);
+				if(next.solved()){
+					return num_moves;
+				}else{
+					//get position of open spot
+					position = next.asString.indexOf(0);
+
+					//try left
+					if(position % 3 != 0){
+						board new_board = new board((swap(next, position, position - 1)).tiles);
+						if(!t.get(new_board.asString)){
+							q.offer(new_board);
+							t.put(new_board.asString, num_moves + 1);
+						}
+					}
+					//try up
+					if(position - 3 > -1){
+						board new_board = new board((swap(next, position, position - 3)).tiles);
+						if(!t.get(new_board.asString)){
+							q.offer(new_board);
+							t.put(new_board.asString, num_moves + 1);
+						}
+					}
+					//try right
+					if(position % 3 != 2){
+						board new_board = new board((swap(next, position, position + 1)).tiles);
+						if(!t.get(new_board.asString)){
+							q.offer(new_board);
+							t.put(new_board.asString, num_moves + 1);
+						}
+					}
+					//try down
+					if(position + 3 < 0){
+						board new_board = new board((swap(next, position, position + 1)).tiles);
+						if(!t.get(new_board.asString)){
+							q.offer(new_board);
+							t.put(new_board.asString, num_moves + 1);
+						}
+					}
+				}
+			}//end while queue
+
+	}//end BFS method
 
 }//end prob8 class
 
@@ -62,7 +107,7 @@ class board {
 
 	}//end board constructor
 
-	public board swap(board b, int p1, int p2){
+	public static board swap(board b, int p1, int p2){
 		int temp = b.tiles[p1];
 		b.tiles[p1] = b.tiles[p2];
 		b.tiles[p2] = temp;
