@@ -12,8 +12,9 @@ public class prob8 {
 
 		Scanner inFile = new Scanner(System.in);
 
-		int num_puzzles;
+		int num_puzzles, num_moves;
 		int i;
+		board next;
 
 		num_puzzles = inFile.nextInt();
 
@@ -30,6 +31,18 @@ public class prob8 {
 			Queue<board> q = new LinkedList<board>();
 			Map t = new HashMap();
 			
+			q.offer(initial_board);
+			t.put(initial_board.asString, 0);
+
+			while(q.size() > 0){
+				next = q.poll();
+				num_moves = t.get(next.asString);
+				if(next.solved()){
+					return num_moves;
+				}else{
+					
+				}
+			}//end while queue
 			
 		}//end main for loop
 
