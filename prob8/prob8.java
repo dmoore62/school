@@ -5,12 +5,16 @@ COP 3503 Assignment 3
 Finds least number of moves solve 8 puzzles
 */
 import java.util.*;
+import java.lang.*;
+import java.io.*;
 
 public class prob8 {
 
 	public static void main (String args[]){
 
 		Scanner inFile = new Scanner(System.in);
+
+		String initial_board = "";
 
 		int num_puzzles, solution;
 		int i;
@@ -19,19 +23,13 @@ public class prob8 {
 
 		for(int main_index = 0; main_index < num_puzzles; main_index ++){
 
-			int[] scan_ary = new int[9];
-
-			for(i = 0; i < 9; i ++){
-				scan_ary[i] = inFile.nextInt();
-			}
-
 			//create boards, queues and hashtable
-			board initial_board = new board(scan_ary);
-			Queue<board> q = new LinkedList<board>();
-			Map t = new HashMap();
+			initial_board = init_board(inFile);
+			Queue<String> q = new LinkedList<String>();
+			Map<String,Integer> t = new HashMap<String, Integer>();
 			
 			q.offer(initial_board);
-			t.put(initial_board.asString, 0);
+			t.put(initial_board, new Integer(0));
 
 			solution = bfs(initial_board, q, t);		
 
@@ -41,90 +39,95 @@ public class prob8 {
 
 	}//end main method
 
-	public static int bfs(board initial_board, Queue q, Map t){
+	public static int bfs(String initial_board, Queue q, Map t){
 
-		board next;
+		String next = new String();
 		int num_moves;
 		int position;
 
 		while(q.size() > 0){
-				next = q.poll();
-				num_moves = (int)t.get(next.asString);
-				if(next.solved()){
+				next = q.poll().toString();
+				//System.out.println(next);
+				num_moves = (int)t.get(next);
+				if(solved(next)){
 					return num_moves;
 				}else{
 					//get position of open spot
-					position = next.asString.indexOf(0);
+					position = next.indexOf("0");
+					//System.out.println(position);
 
 					//try left
 					if(position % 3 != 0){
-						board new_board = new board((swap(next, position, position - 1)).tiles);
-						if(!t.get(new_board.asString)){
+						String new_board = new String(swap(next, position, position - 1));
+						if(!t.containsKey(new_board)){
+							//System.out.println("new - unseen board"+ new_board);
 							q.offer(new_board);
-							t.put(new_board.asString, num_moves + 1);
+							t.put(new_board, new Integer(num_moves + 1));
 						}
 					}
 					//try up
 					if(position - 3 > -1){
-						board new_board = new board((swap(next, position, position - 3)).tiles);
-						if(!t.get(new_board.asString)){
+						String new_board = new String(swap(next, position, position - 3));
+						if(!t.containsKey(new_board)){
+							//System.out.println("new - unseen board"+ new_board);
 							q.offer(new_board);
-							t.put(new_board.asString, num_moves + 1);
+							t.put(new_board, new Integer(num_moves + 1));
 						}
 					}
 					//try right
 					if(position % 3 != 2){
-						board new_board = new board((swap(next, position, position + 1)).tiles);
-						if(!t.get(new_board.asString)){
+						String new_board = new String(swap(next, position, position + 1));
+						if(!t.containsKey(new_board)){
+							//System.out.println("new - unseen board"+ new_board);
 							q.offer(new_board);
-							t.put(new_board.asString, num_moves + 1);
+							t.put(new_board, new Integer(num_moves + 1));
 						}
 					}
 					//try down
-					if(position + 3 < 0){
-						board new_board = new board((swap(next, position, position + 1)).tiles);
-						if(!t.get(new_board.asString)){
+					if(position + 3 < 9){
+						String new_board = new String(swap(next, position, position + 3));
+						if(!t.containsKey(new_board)){
+							//System.out.println("new - unseen board"+ new_board);
 							q.offer(new_board);
-							t.put(new_board.asString, num_moves + 1);
+							t.put(new_board, new Integer(num_moves + 1));
 						}
 					}
 				}
 			}//end while queue
 
+			return 99999;
+
 	}//end BFS method
 
-}//end prob8 class
+	public static String init_board(Scanner inFile){
+		String s = "";
+		int i;
 
-class board {
-	public int[] tiles = new int[9];
-	String asString = "";
-	public board (int ary[]){
-		
-		for(int i = 0; i < 9; i ++){
-			this.tiles[i] = ary[i];
-			this.asString += ary[i];
-		}//end i for
-
-	}//end board constructor
-
-	public static board swap(board b, int p1, int p2){
-		int temp = b.tiles[p1];
-		b.tiles[p1] = b.tiles[p2];
-		b.tiles[p2] = temp;
-
-		return b;
-	}
-
-	public boolean solved(){
-		for(int i = 0; i < 8; i ++){
-			if(this.tiles[i] != i + 1)
-				return false;
+		for (i = 0; i < 9; i ++){
+			s += inFile.nextInt();
 		}
+		
+		return s;
+	}//end init_board method
 
-		return true;
+	public static boolean solved(String s){
+		if(s.equals("123456780")){
+			return true;
+		}else{
+			return false;
+		}
+	}//end solved method
+
+	public static char[] swap(String s, int p1, int p2){
+		char temp;
+
+		char[] c = s.toCharArray();
+
+		temp = c[p1];
+		c[p1] = c[p2];
+		c[p2] = temp;
+
+		return c;
 	}
 
-	public String toString(){
-		return this.toString();
-	}
-}//end board class
+}//end prob8 class
