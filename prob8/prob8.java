@@ -25,11 +25,11 @@ public class prob8 {
 
 			//create boards, queues and hashtable
 			initial_board = init_board(inFile);
-			Queue<String> q = new LinkedList<String>();
-			Map<String,Integer> t = new HashMap<String, Integer>();
+			LinkedList<String> q = new LinkedList<String>();
+			HashMap<Integer,Integer> t = new HashMap<Integer, Integer>();
 			
 			q.offer(initial_board);
-			t.put(initial_board, new Integer(0));
+			t.put(initial_board.hashCode(), new Integer(0));
 
 			solution = bfs(initial_board, q, t);		
 
@@ -39,8 +39,7 @@ public class prob8 {
 
 	}//end main method
 
-	public static int bfs(String initial_board, Queue q, Map t){
-
+	public static int bfs(String initial_board, LinkedList<String> q, HashMap<Integer, Integer> t){
 		String next = new String();
 		int num_moves;
 		int position;
@@ -48,7 +47,7 @@ public class prob8 {
 		while(q.size() > 0){
 				next = q.poll().toString();
 				//System.out.println(next);
-				num_moves = (int)t.get(next);
+				num_moves = (int)t.get(next.hashCode());
 				if(solved(next)){
 					return num_moves;
 				}else{
@@ -59,37 +58,45 @@ public class prob8 {
 					//try left
 					if(position % 3 != 0){
 						String new_board = new String(swap(next, position, position - 1));
-						if(!t.containsKey(new_board)){
+						if(!t.containsKey(new_board.hashCode())){
 							//System.out.println("new - unseen board"+ new_board);
 							q.offer(new_board);
-							t.put(new_board, new Integer(num_moves + 1));
+							t.put(new_board.hashCode(), new Integer(num_moves + 1));
+						}else{
+							//System.out.println("hash worked");
 						}
 					}
 					//try up
 					if(position - 3 > -1){
 						String new_board = new String(swap(next, position, position - 3));
-						if(!t.containsKey(new_board)){
+						if(!t.containsKey(new_board.hashCode())){
 							//System.out.println("new - unseen board"+ new_board);
 							q.offer(new_board);
-							t.put(new_board, new Integer(num_moves + 1));
+							t.put(new_board.hashCode(), new Integer(num_moves + 1));
+						}else{
+							//System.out.println("hash worked");
 						}
 					}
 					//try right
 					if(position % 3 != 2){
 						String new_board = new String(swap(next, position, position + 1));
-						if(!t.containsKey(new_board)){
+						if(!t.containsKey(new_board.hashCode())){
 							//System.out.println("new - unseen board"+ new_board);
 							q.offer(new_board);
-							t.put(new_board, new Integer(num_moves + 1));
+							t.put(new_board.hashCode(), new Integer(num_moves + 1));
+						}else{
+							//System.out.println("hash worked");
 						}
 					}
 					//try down
 					if(position + 3 < 9){
 						String new_board = new String(swap(next, position, position + 3));
-						if(!t.containsKey(new_board)){
+						if(!t.containsKey(new_board.hashCode())){
 							//System.out.println("new - unseen board"+ new_board);
 							q.offer(new_board);
-							t.put(new_board, new Integer(num_moves + 1));
+							t.put(new_board.hashCode(), new Integer(num_moves + 1));
+						}else{
+							//System.out.println("hash worked");
 						}
 					}
 				}
@@ -103,11 +110,12 @@ public class prob8 {
 		String s = "";
 		int i;
 
-		for (i = 0; i < 9; i ++){
+		for(i = 0; i < 9; i ++){
 			s += inFile.nextInt();
 		}
-		
+
 		return s;
+
 	}//end init_board method
 
 	public static boolean solved(String s){
