@@ -34,9 +34,11 @@ public class prob8 {
 			//call the breedth first search and save return into an int
 			solution = bfs(initial_board, q, t);		
 
-			//creates output
-			System.out.println(solution);
-			
+			if(solution >= 0){
+				System.out.println(solution);
+			}else{
+				System.out.println("Invalid Puzzle");
+			}
 		}//end main for loop
 
 	}//end main method
@@ -46,7 +48,7 @@ public class prob8 {
 	//can be found.  Returns -1 if board id invalid.
 	public static int bfs(String initial_board, LinkedList<String> q, HashMap<Integer, Integer> t){
 		String next = new String();
-		int num_moves = NULL;
+		int num_moves;
 		int position;
 
 		while(q.size() > 0){
