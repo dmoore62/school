@@ -110,20 +110,28 @@ public class Skyline{
 					i_sl1 += 2;
 					i_sl2 += 2;
 				}else{
-					//one or more exists
+					//one or more lookbacks exist
 					//take the taller building increment both
-					if(sl1.get(i_sl1 + 1).intValue() > sl2.get(i_sl2 + 1).intValue()){
-						//sl1 is higher
-						new_skyline.add(sl1.get(i_sl1));
-						new_skyline.add(sl1.get(i_sl1 + 1));
+					if(i_sl1 - 1 > 0 && sl1.get(i_sl1 - 1).intValue() == sl2.get(i_sl2 + 1).intValue()){
+						i_sl1 += 2;
+						i_sl2 += 2;
+					}else if(i_sl2 - 1 > 0 && sl2.get(i_sl2 - 1).intValue() == sl1.get(i_sl1 + 1).intValue()){
+						i_sl1 += 2;
+						i_sl2 += 2;
 					}else{
-						//sl2 is higher, or same
-						new_skyline.add(sl2.get(i_sl2));
-						new_skyline.add(sl2.get(i_sl2 + 1));
+						if(sl1.get(i_sl1 + 1).intValue() > sl2.get(i_sl2 + 1).intValue()){
+							//sl1 is higher
+							new_skyline.add(sl1.get(i_sl1));
+							new_skyline.add(sl1.get(i_sl1 + 1));
+						}else{
+							//sl2 is higher, or same
+							new_skyline.add(sl2.get(i_sl2));
+							new_skyline.add(sl2.get(i_sl2 + 1));
+						}
+						i_sl1 += 2;
+						i_sl2 += 2;
 					}
-					i_sl1 += 2;
-					i_sl2 += 2;
-				}
+				}	
 
 			}else if(sl1.get(i_sl1).intValue() < sl2.get(i_sl2).intValue()){
 				//the top value should go in
