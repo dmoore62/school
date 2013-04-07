@@ -29,17 +29,15 @@ public class Skyline{
 				input_skylines.add(0);
 
 			}//end main for
-			System.out.println("New Skylines");
 			for(int x = 0, y = input_skylines.size(); x < y; x++){
 				System.out.printf("%d ", input_skylines.get(x));
 			}
-			System.out.println();
 			main_index = inFile.nextInt();
 		}//end main while
 
 	}//end main method
 
-	public ArrayList Skyline_split(ArrayList skyline){
+	public ArrayList<Integer> Skyline_split(ArrayList<Integer> skyline){
 		int size = skyline.size();
 
 		if(size == 4){
@@ -65,9 +63,9 @@ public class Skyline{
 		return new_skyline;
 	}
 
-	public ArrayList Skyline_merge(ArrayList sl1, ArrayList sl2){
+	public ArrayList<Integer> Skyline_merge(ArrayList<Integer> sl1, ArrayList<Integer> sl2){
 		
-		ArrayList<Integer> = new_skyline = new ArrayList<Integer>();
+		ArrayList<Integer> new_skyline = new ArrayList<Integer>();
 		int i_sl1 = 0;
 		int i_sl2 = 0;
 
@@ -92,6 +90,18 @@ public class Skyline{
 					i_sl2 += 2;
 				}else{
 					//one or more exists
+					//take the taller building increment both
+					if(sl1.get(i_sl1 + 1).intValue() > sl2.get(i_sl2 + 1).intValue()){
+						//sl1 is higher
+						new_skyline.add(sl1.get(i_sl1));
+						new_skyline.add(sl1.get(i_sl1 + 1));
+					}else{
+						//sl2 is higher, or same
+						new_skyline.add(sl2.get(i_sl2));
+						new_skyline.add(sl2.get(i_sl2 + 1));
+					}
+					i_sl1 += 2;
+					i_sl2 += 2;
 				}
 
 			}else if(sl1.get(i_sl1).intValue() < sl2.get(i_sl2).intValue()){
@@ -182,7 +192,10 @@ public class Skyline{
 			while(i_sl1 < sl1.size()){
 				new_skyline.add(sl1.get(i_sl1));
 				i_sl1 ++;
+			}
 		}
+
+	return new_skyline;
 	}
 
 }//end Skyline class
