@@ -19,6 +19,7 @@ public class Skyline{
 		while(main_index != 0){
 
 			ArrayList<Integer> input_skylines = new ArrayList<Integer>();
+			ArrayList<Integer> final_skyline = new ArrayList<Integer>();
 
 			for(int i = 0; i < main_index; i ++){
 
@@ -29,16 +30,21 @@ public class Skyline{
 				input_skylines.add(0);
 
 			}//end main for
-			for(int x = 0, y = input_skylines.size(); x < y; x++){
-				System.out.printf("%d ", input_skylines.get(x));
+
+			final_skyline = Skyline_split(input_skylines);
+			//System.out.println(final_skyline.size());
+			for(int x = 0; x < final_skyline.size(); x++){
+				System.out.printf("%d ", final_skyline.get(x));
 			}
+			System.out.printf("\n");
 			main_index = inFile.nextInt();
 		}//end main while
 
 	}//end main method
 
-	public ArrayList<Integer> Skyline_split(ArrayList<Integer> skyline){
+	public static ArrayList<Integer> Skyline_split(ArrayList<Integer> skyline){
 		int size = skyline.size();
+		//System.out.printf("Size: %d\n", size);
 
 		if(size == 4){
 			return skyline;
@@ -48,7 +54,8 @@ public class Skyline{
 		ArrayList<Integer> skyline_two = new ArrayList<Integer>();
 		ArrayList<Integer> new_skyline = new ArrayList<Integer>();
 
-		int split = (size / 2) + ((size / 2) % 4) - 1;
+		int split = (size / 2) + ((size / 2) % 4);
+		//System.out.println(split);
 		for(int i = 0; i < split; i ++){
 			skyline_one.add(skyline.get(i));
 		}
@@ -58,12 +65,26 @@ public class Skyline{
 
 		skyline_one = Skyline_split(skyline_one);
 		skyline_two = Skyline_split(skyline_two);
+		/*System.out.println("Into Merge With:");
+		for(int x = 0; x < skyline_one.size(); x++){
+				System.out.printf("%d ", skyline_one.get(x));
+			}
+		System.out.println("And");
+		for(int x = 0; x < skyline_two.size(); x++){
+				System.out.printf("%d ", skyline_two.get(x));
+			}
+		*/
 		new_skyline = Skyline_merge(skyline_one, skyline_two);
-
+		/*System.out.println("Out of Merge With:");
+		for(int x = 0; x < new_skyline.size(); x++){
+				System.out.printf("%d ", new_skyline.get(x));
+			}
+		System.out.println();
+		*/
 		return new_skyline;
 	}
 
-	public ArrayList<Integer> Skyline_merge(ArrayList<Integer> sl1, ArrayList<Integer> sl2){
+	public static ArrayList<Integer> Skyline_merge(ArrayList<Integer> sl1, ArrayList<Integer> sl2){
 		
 		ArrayList<Integer> new_skyline = new ArrayList<Integer>();
 		int i_sl1 = 0;
@@ -181,9 +202,9 @@ public class Skyline{
 
 				}
 			}
-
+			
 		}
-		if(i_sl1 > sl1.size()){
+		if(i_sl1 == sl1.size()){
 			while(i_sl2 < sl2.size()){
 				new_skyline.add(sl2.get(i_sl2));
 				i_sl2 ++;
