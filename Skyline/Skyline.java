@@ -31,6 +31,17 @@ public class Skyline{
 
 			}//end main for
 
+			//get rid of invisible buildings
+			for(int k = 0; k < input_skylines.size(); k += 4){
+				if(input_skylines.get(k).intValue() == input_skylines.get(k + 2).intValue()){
+					//System.out.printf("found it! %d\n", k);
+					for(int m = 0; m < 4; m ++){
+						input_skylines.remove(k);
+					}
+					k-=4;
+				}
+			}
+			//final_skyline = input_skylines;
 			final_skyline = Skyline_split(input_skylines);
 			//System.out.println(final_skyline.size());
 			for(int x = 0; x < final_skyline.size(); x++){
@@ -47,7 +58,7 @@ public class Skyline{
 		//System.out.printf("Size: %d\n", size);
 
 		if(size == 4){
-			return skyline;
+				return skyline;
 		}
 
 		ArrayList<Integer> skyline_one = new ArrayList<Integer>();
@@ -74,6 +85,7 @@ public class Skyline{
 				System.out.printf("%d ", skyline_two.get(x));
 			}
 		*/
+		
 		new_skyline = Skyline_merge(skyline_one, skyline_two);
 		/*System.out.println("Out of Merge With:");
 		for(int x = 0; x < new_skyline.size(); x++){
