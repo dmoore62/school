@@ -1,8 +1,8 @@
 /*Skyline.java
 Name: Daniel Moore
 COP 3503
-Assignment 4
-4/1/2013*/
+Assignment 4 - final submitted version
+4/8/2013*/
 
 import java.io.*;
 import java.util.*;
@@ -18,6 +18,8 @@ public class Skyline{
 
 		while(main_index != 0){
 
+			//create a list to scan input skylines into
+			//and one to hold final list
 			ArrayList<Integer> input_skylines = new ArrayList<Integer>();
 			ArrayList<Integer> final_skyline = new ArrayList<Integer>();
 
@@ -41,32 +43,42 @@ public class Skyline{
 					k-=4;
 				}
 			}
-			//final_skyline = input_skylines;
+			
+			//recursive merge solution
 			final_skyline = Skyline_split(input_skylines);
-			//System.out.println(final_skyline.size());
+			
+			//print out final skyline
 			for(int x = 0; x < final_skyline.size(); x++){
 				System.out.printf("%d ", final_skyline.get(x));
 			}
+
 			System.out.printf("\n");
+
+			//see if we go again!
 			main_index = inFile.nextInt();
 		}//end main while
 
 	}//end main method
 
+	/* Splits input in half based on a mod 4 rule
+	// the lower half gets the leftover if a clean 50/50 split is not possible
+	*/
 	public static ArrayList<Integer> Skyline_split(ArrayList<Integer> skyline){
 		int size = skyline.size();
-		//System.out.printf("Size: %d\n", size);
 
+		//base case - the skyline of a single building
 		if(size == 4){
 				return skyline;
 		}
 
+		//create ArrayList to hold things
 		ArrayList<Integer> skyline_one = new ArrayList<Integer>();
 		ArrayList<Integer> skyline_two = new ArrayList<Integer>();
 		ArrayList<Integer> new_skyline = new ArrayList<Integer>();
 
+		//split the arrays
 		int split = (size / 2) + ((size / 2) % 4);
-		//System.out.println(split);
+		
 		for(int i = 0; i < split; i ++){
 			skyline_one.add(skyline.get(i));
 		}
@@ -74,28 +86,18 @@ public class Skyline{
 			skyline_two.add(skyline.get(j));
 		}
 
+		//Looks like Merge-Sort
 		skyline_one = Skyline_split(skyline_one);
 		skyline_two = Skyline_split(skyline_two);
-		/*System.out.println("Into Merge With:");
-		for(int x = 0; x < skyline_one.size(); x++){
-				System.out.printf("%d ", skyline_one.get(x));
-			}
-		System.out.println("And");
-		for(int x = 0; x < skyline_two.size(); x++){
-				System.out.printf("%d ", skyline_two.get(x));
-			}
-		*/
 		
 		new_skyline = Skyline_merge(skyline_one, skyline_two);
-		/*System.out.println("Out of Merge With:");
-		for(int x = 0; x < new_skyline.size(); x++){
-				System.out.printf("%d ", new_skyline.get(x));
-			}
-		System.out.println();
-		*/
+		
 		return new_skyline;
 	}
 
+	/* Merges two skylines into one
+	// Hides all smaller buildings - Returns new Skyline
+	*/ 
 	public static ArrayList<Integer> Skyline_merge(ArrayList<Integer> sl1, ArrayList<Integer> sl2){
 		
 		ArrayList<Integer> new_skyline = new ArrayList<Integer>();
@@ -160,7 +162,7 @@ public class Skyline{
 						//sl1 goes in
 						new_skyline.add(sl1.get(i_sl1));
 						new_skyline.add(sl1.get(i_sl1 + 1));
-					i_sl1 += 2;
+						i_sl1 += 2;
 					}else{
 						//the building may be hidden
 						if(i_sl1 - 1 < 0){
@@ -224,6 +226,7 @@ public class Skyline{
 			}
 			
 		}
+		//fill in whatever is left
 		if(i_sl1 == sl1.size()){
 			while(i_sl2 < sl2.size()){
 				new_skyline.add(sl2.get(i_sl2));
