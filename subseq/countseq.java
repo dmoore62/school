@@ -3,7 +3,7 @@ Daniel Moore
 COP 3503 HW5 Part 2
 4/15/2013*/
 
-import javaj.util.*;
+import java.util.*;
 
 public class countseq{
 

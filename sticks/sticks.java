@@ -29,7 +29,7 @@ public class sticks{
 		 	for(int i = 1; i < size + 1; i ++){
 		 		ary[i] = inFile.nextInt();
 		 	}
-		 	ary[size + 2] = length;
+		 	ary[size + 1] = length;
 
 		 	for(int i = 0; i < size + 2; i ++){
 		 		for(int j = 0; j < size + 2; j ++){
@@ -37,15 +37,12 @@ public class sticks{
 		 		}
 		 	}
 
-		 	System.out.println(minCut(ary, memo, 0, size+2));
+		 	System.out.println(minCut(ary, memo, 0, size+1));
 
 		 }//end main for
 	}//end main method
 
 	public static int minCut(int[] ary, int[][] memo, int i, int j){
-		int score;
-		int best = 2147483647;
-
 		if(memo[i][j] != -1){
 			return memo[i][j];
 		}
@@ -54,8 +51,10 @@ public class sticks{
 			return 0;
 		}
 		else{
-			for(int k = i + 1; k < j; k ++){
-				score = minCut(ary, memo, i, i+k) + minCut(ary, memo, i+k, j) + (ary[j] - ary[i]);
+			int score;
+			int best = 1000;
+			for(int k = i + 1; k < j; k++){
+				score = minCut(ary, memo, i, k) + minCut(ary, memo, k, j) + (ary[j] - ary[i]);
 				if(score < best){
 					best = score;
 				}
