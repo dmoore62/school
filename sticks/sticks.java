@@ -52,7 +52,7 @@ public class sticks{
 		}
 		else{
 			int score;
-			int best = 1000;
+			int best = 2147483647;
 			for(int k = i + 1; k < j; k++){
 				score = minCut(ary, memo, i, k) + minCut(ary, memo, k, j) + (ary[j] - ary[i]);
 				if(score < best){
